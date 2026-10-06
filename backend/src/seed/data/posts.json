@@ -1,0 +1,288 @@
+[
+  {
+    "slug": "website-redesign-roi",
+    "title": "Is a website redesign worth it? How to measure the ROI before you spend",
+    "excerpt": "A redesign should be an investment with a return, not a cosmetic refresh. Here's how to size the opportunity first.",
+    "category": "Strategy",
+    "tags": [
+      "Web Development",
+      "ROI",
+      "Conversion"
+    ],
+    "author": {
+      "name": "Riyadvi Strategy Team",
+      "role": "Digital Strategy"
+    },
+    "publishedAt": "2026-08-18",
+    "accent": "#d4af37",
+    "featured": true,
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "Most redesign briefs start with \"our website looks outdated\". That's a valid feeling — but it's not a business case. Before you invest, put numbers on what a better website would actually change."
+      },
+      {
+        "type": "heading",
+        "text": "Start with the funnel you already have"
+      },
+      {
+        "type": "paragraph",
+        "text": "Open your analytics and write down three numbers for the last 90 days: visitors, enquiries (or sales) and conversion rate. These are your baseline. A redesign that doesn't move at least one of them is decoration."
+      },
+      {
+        "type": "list",
+        "items": [
+          "Monthly visitors from search and ads",
+          "Enquiries, bookings or orders",
+          "Conversion rate = enquiries ÷ visitors",
+          "Average value of a customer"
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "Estimate the upside"
+      },
+      {
+        "type": "paragraph",
+        "text": "If 4,000 people visit each month and 1% enquire, that's 40 leads. Lifting conversion to 1.8% with a faster, clearer site means 72 leads — 32 more every month, with no extra ad spend. Multiply by your close rate and customer value and you have a real number to compare against the project cost."
+      },
+      {
+        "type": "callout",
+        "title": "Rule of thumb",
+        "text": "If the projected 12-month gain is less than 3× the project cost, fix the biggest bottleneck first (speed, mobile UX, the contact flow) instead of a full redesign."
+      },
+      {
+        "type": "heading",
+        "text": "Where redesigns usually win"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Page speed on mobile — every extra second costs conversions",
+          "Clear service pages that answer \"is this for me?\"",
+          "One obvious next step on every page",
+          "Trust: case studies, reviews and real people"
+        ]
+      },
+      {
+        "type": "quote",
+        "text": "Design is not just what it looks like and feels like. Design is how it works.",
+        "cite": "Steve Jobs"
+      },
+      {
+        "type": "paragraph",
+        "text": "Not sure where your biggest leak is? Our free Business Health Checkup scores your website, marketing and technology in three minutes."
+      }
+    ],
+    "order": 0
+  },
+  {
+    "slug": "mvp-scope-guide",
+    "title": "How to scope an MVP that ships in weeks, not months",
+    "excerpt": "The fastest products to market aren't built faster — they're scoped smarter. A practical framework for founders.",
+    "category": "Product",
+    "tags": [
+      "App Development",
+      "MVP",
+      "Planning"
+    ],
+    "author": {
+      "name": "Riyadvi Product Team",
+      "role": "Product & Delivery"
+    },
+    "publishedAt": "2026-07-29",
+    "accent": "#f59e0b",
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "Every founder has a list of 40 features. The MVP that wins usually ships five. The difference is not ambition — it's a clear definition of the one outcome version one must prove."
+      },
+      {
+        "type": "heading",
+        "text": "Write the one-sentence outcome"
+      },
+      {
+        "type": "paragraph",
+        "text": "\"Users can book and pay for a consultation in under two minutes.\" Every feature must earn its place by serving that sentence."
+      },
+      {
+        "type": "heading",
+        "text": "Sort ruthlessly"
+      },
+      {
+        "type": "list",
+        "ordered": true,
+        "items": [
+          "Must have — without it the outcome is impossible",
+          "Should have — valuable, but users can wait a few weeks",
+          "Could have — revisit with real usage data"
+        ]
+      },
+      {
+        "type": "callout",
+        "title": "Red flag",
+        "text": "If your must-have list has more than seven items, you're describing version three, not an MVP."
+      },
+      {
+        "type": "heading",
+        "text": "Build the boring parts with proven tools"
+      },
+      {
+        "type": "paragraph",
+        "text": "Authentication, payments and notifications are solved problems. Use battle-tested services and spend your budget on what makes your product different."
+      },
+      {
+        "type": "paragraph",
+        "text": "Want the full checklist? Download our free Software Project Planning Guide."
+      }
+    ],
+    "order": 1
+  },
+  {
+    "slug": "3d-on-the-web-performance",
+    "title": "3D on the web without killing performance: lessons from building this site",
+    "excerpt": "Real-time 3D can delight or destroy your Core Web Vitals. The techniques we use to keep it fast on every device.",
+    "category": "Engineering",
+    "tags": [
+      "3D",
+      "Three.js",
+      "Performance"
+    ],
+    "author": {
+      "name": "Riyadvi Engineering",
+      "role": "Web & 3D"
+    },
+    "publishedAt": "2026-09-12",
+    "accent": "#e5c76b",
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "Interactive 3D is one of the most memorable things you can put on a website — and one of the easiest ways to make it slow. These are the rules we followed for the Riyadvi site."
+      },
+      {
+        "type": "heading",
+        "text": "1. One canvas, many views"
+      },
+      {
+        "type": "paragraph",
+        "text": "Browsers limit live WebGL contexts. We render every 3D section through a single shared canvas, drawing each scene into its own rectangle. Shaders compile once and navigation never recreates the context."
+      },
+      {
+        "type": "heading",
+        "text": "2. Let the device decide"
+      },
+      {
+        "type": "paragraph",
+        "text": "We score the device before loading any 3D: GPU, CPU cores, memory, screen size, data-saver and reduced-motion preferences. Low-end devices get a lightweight SVG version and never download the 3D bundle at all."
+      },
+      {
+        "type": "heading",
+        "text": "3. Move work to the GPU"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Instancing: 110 nodes in a single draw call",
+          "Morphing 2,600 points in a vertex shader",
+          "No object allocation inside the render loop",
+          "Scenes stop rendering the moment they scroll off screen"
+        ]
+      },
+      {
+        "type": "callout",
+        "title": "The test",
+        "text": "If the page is fully usable with JavaScript disabled — headline, CTAs, content — the 3D is an enhancement, not a dependency."
+      }
+    ],
+    "order": 2
+  },
+  {
+    "slug": "local-seo-clinics",
+    "title": "Local SEO for clinics: 7 fixes that bring in more appointments",
+    "excerpt": "Patients search \"physiotherapist near me\", not your brand name. Seven practical fixes to show up when it matters.",
+    "category": "Marketing",
+    "tags": [
+      "Digital Marketing",
+      "SEO",
+      "Healthcare"
+    ],
+    "author": {
+      "name": "Riyadvi Growth Team",
+      "role": "Digital Marketing"
+    },
+    "publishedAt": "2026-06-20",
+    "accent": "#34d399",
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "For clinics, the most valuable search results are local. The good news: most competitors neglect the basics, so small, consistent fixes go a long way."
+      },
+      {
+        "type": "list",
+        "ordered": true,
+        "items": [
+          "Complete every field of your Google Business Profile",
+          "Use the same name, address and phone everywhere",
+          "Create one page per treatment, written in patients' words",
+          "Ask every happy patient for a review — and reply to all of them",
+          "Add opening hours and online booking to your profile",
+          "Make the site fast on mobile",
+          "Publish answers to common questions as short articles"
+        ]
+      },
+      {
+        "type": "quote",
+        "text": "The best time to ask for a review is right after a patient tells you they feel better."
+      },
+      {
+        "type": "paragraph",
+        "text": "These steps cost little more than time, and compound month after month."
+      }
+    ],
+    "order": 3
+  },
+  {
+    "slug": "choosing-tech-stack-2026",
+    "title": "Choosing a tech stack in 2026: a guide for non-technical founders",
+    "excerpt": "You don't need to code to make a good technology decision. Ask these five questions instead.",
+    "category": "Engineering",
+    "tags": [
+      "Web Development",
+      "Technology",
+      "Planning"
+    ],
+    "author": {
+      "name": "Riyadvi Engineering",
+      "role": "Architecture"
+    },
+    "publishedAt": "2026-05-14",
+    "accent": "#60a5fa",
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "Technology choices outlive the developers who make them. A sound decision is less about what's trendy and more about what you can hire for, maintain and grow."
+      },
+      {
+        "type": "heading",
+        "text": "Five questions to ask any development partner"
+      },
+      {
+        "type": "list",
+        "ordered": true,
+        "items": [
+          "Can we hire developers for this in three years?",
+          "How will it handle ten times today's users?",
+          "Can our team edit content without a developer?",
+          "How does it connect to our CRM, ERP and payments?",
+          "Who owns the code, accounts and data?"
+        ]
+      },
+      {
+        "type": "callout",
+        "title": "Our default",
+        "text": "Next.js and React on the web, React Native or Flutter for mobile, Node.js APIs and a managed database — mainstream, well-documented and easy to hire for."
+      }
+    ],
+    "order": 4
+  }
+]

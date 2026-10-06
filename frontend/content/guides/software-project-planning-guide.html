@@ -1,0 +1,206 @@
+<!doctype html>
+<!--
+  Source of the lead-magnet PDF (public/downloads/riyadvi-software-project-planning-guide.pdf).
+  Rendered to A4 PDF with headless Chromium — see frontend/README.md › "Lead magnet PDF".
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Software Project Planning Guide — Riyadvi Software Technologies</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", "Segoe UI", Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; line-height: 1.55; }
+  .page { width: 210mm; height: 297mm; padding: 22mm 20mm 18mm; position: relative; page-break-after: always; overflow: hidden; }
+  .page:last-child { page-break-after: auto; }
+  .gold { color: #b8941f; }
+  h1, h2, h3 { letter-spacing: -0.02em; margin: 0; }
+  h2 { font-size: 22pt; margin: 4mm 0 5mm; }
+  h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+  p { margin: 0 0 3mm; }
+  .eyebrow { font-size: 8.5pt; letter-spacing: 0.25em; text-transform: uppercase; color: #b8941f; font-weight: 600; }
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; font-size: 8pt; color: #8a8a8a; border-top: 1px solid #e6e2d6; padding-top: 3mm; }
+  ul.check { list-style: none; padding: 0; margin: 2mm 0 4mm; }
+  ul.check li { padding-left: 8mm; position: relative; margin-bottom: 2mm; }
+  ul.check li::before { content: ""; position: absolute; left: 0; top: 1.2mm; width: 3.5mm; height: 3.5mm; border: 1.4px solid #b8941f; border-radius: 1mm; }
+  .box { border: 1px solid #e6e2d6; border-left: 3px solid #d4af37; border-radius: 2mm; padding: 4mm 5mm; margin: 4mm 0; background: #fbfaf6; }
+  table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+  th, td { text-align: left; padding: 2.2mm 3mm; border-bottom: 1px solid #ece8dc; vertical-align: top; }
+  th { background: #f6f3ea; font-weight: 600; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+
+  /* Cover */
+  .cover { background: #000; color: #f5f5f4; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover h1 { font-size: 40pt; line-height: 1.05; margin-top: 8mm; }
+  .cover .gold-text { background: linear-gradient(120deg,#b8941f,#d4af37 30%,#f5e27a 50%,#d4af37 70%,#b8941f); -webkit-background-clip: text; color: transparent; }
+  .cover .lead { font-size: 13pt; color: #a1a1aa; max-width: 140mm; margin-top: 8mm; }
+  .net { position: absolute; right: -55mm; top: 150mm; width: 175mm; opacity: 0.7; }
+  .brand { display: flex; align-items: center; gap: 3mm; font-weight: 700; font-size: 13pt; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Cover -->
+<section class="page cover">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 28 28"><path d="M14 3 L25 22 L3 22 Z" fill="none" stroke="#d4af37" stroke-width="1.5"/><circle cx="14" cy="3.5" r="2.5" fill="#d4af37"/><circle cx="24.5" cy="22" r="2.5" fill="#d4af37"/><circle cx="3.5" cy="22" r="2.5" fill="#d4af37"/></svg>
+    Riyadvi<span style="color:#d4af37">.</span>
+  </div>
+  <svg class="net" viewBox="0 0 400 400" fill="none" stroke="#b8941f" stroke-width="0.8">
+    <circle cx="200" cy="200" r="90" stroke="#d4af37" opacity=".5"/>
+    <path d="M60 120L150 70L260 90L340 160L330 270L240 330L130 320L70 240Z M150 70L200 200L260 90 M340 160L200 200L330 270 M240 330L200 200L130 320 M70 240L200 200L60 120"/>
+    <g fill="#d4af37" stroke="none"><circle cx="60" cy="120" r="5"/><circle cx="150" cy="70" r="4"/><circle cx="260" cy="90" r="6"/><circle cx="340" cy="160" r="4"/><circle cx="330" cy="270" r="5"/><circle cx="240" cy="330" r="4"/><circle cx="130" cy="320" r="6"/><circle cx="70" cy="240" r="4"/><circle cx="200" cy="200" r="9"/></g>
+  </svg>
+  <div style="position:relative">
+    <p class="eyebrow">Free guide · 2026 edition</p>
+    <h1>Software Project<br/><span class="gold-text">Planning Guide</span></h1>
+    <p class="lead">A practical playbook for founders and business leaders: how to plan a website, app or custom software project that ships on time, on budget — and actually grows your business.</p>
+  </div>
+  <p style="color:#8a8a93;font-size:9pt">riyadvisoftwaretechnologies.com · Technology &amp; Digital Solutions Partner since 2021</p>
+</section>
+
+<!-- 2 · Why projects fail + contents -->
+<section class="page">
+  <p class="eyebrow">Before you start</p>
+  <h2>Why most software projects go over budget</h2>
+  <p>Most projects don't fail because of bad code. They fail because of unclear goals, scope that keeps growing, and decisions made too late. The good news: all three are planning problems — and planning is cheap compared to rework.</p>
+  <table>
+    <tr><th>Common cause</th><th>What it looks like</th><th>The fix (in this guide)</th></tr>
+    <tr><td>No measurable goal</td><td>"We need a new website" with no target</td><td>Step 1 — Define outcomes</td></tr>
+    <tr><td>Scope creep</td><td>Features added every week</td><td>Step 2 — Scope an MVP</td></tr>
+    <tr><td>Unrealistic budget</td><td>Price decided before scope</td><td>Step 3 — Budget &amp; timeline</td></tr>
+    <tr><td>Wrong technology</td><td>Rebuilt in 18 months</td><td>Step 4 — Choose your stack</td></tr>
+    <tr><td>Vendor mismatch</td><td>Missed deadlines, poor communication</td><td>Step 5 — Pick a partner</td></tr>
+    <tr><td>"Launch and forget"</td><td>Traffic but no results</td><td>Step 6 — Launch &amp; grow</td></tr>
+  </table>
+  <div class="box"><strong>How to use this guide:</strong> work through the six steps in order and tick the checklists. By the end you'll have a one-page project brief any development partner can quote accurately against.</div>
+  <div class="footer"><span>Software Project Planning Guide</span><span>2</span></div>
+</section>
+
+<!-- 3 · Steps 1–2 -->
+<section class="page">
+  <p class="eyebrow">Step 1</p>
+  <h2>Define outcomes, not features</h2>
+  <p>Start with the business result you need in 12 months. Features come later — and only if they move that number.</p>
+  <ul class="check">
+    <li>Write one sentence: "In 12 months this project will ___ (metric) from ___ to ___."</li>
+    <li>List your primary users (customers, staff, partners) and their #1 job to be done.</li>
+    <li>Note what happens today without the software — the cost of doing nothing.</li>
+    <li>Agree who makes final decisions, and how fast.</li>
+  </ul>
+  <div class="box"><strong>Example:</strong> "Increase online appointment bookings from 40 to 150 per month, and cut phone-booking time for reception by 50%."</div>
+
+  <p class="eyebrow" style="margin-top:8mm">Step 2</p>
+  <h2>Scope a Minimum Viable Product</h2>
+  <p>An MVP is the smallest version that delivers the outcome to real users. Sort every idea into three buckets:</p>
+  <table>
+    <tr><th>Must have (launch)</th><th>Should have (v1.1)</th><th>Could have (later)</th></tr>
+    <tr><td>Without it, the outcome is impossible</td><td>Valuable, but users can cope for 2–3 months</td><td>Nice ideas — revisit with real data</td></tr>
+  </table>
+  <ul class="check">
+    <li>No more than 5–7 "must have" features.</li>
+    <li>Each must-have is traced to the outcome from Step 1.</li>
+    <li>Sketch the key screens — even on paper. Pictures remove ambiguity.</li>
+  </ul>
+  <div class="footer"><span>Software Project Planning Guide</span><span>3</span></div>
+</section>
+
+<!-- 4 · Steps 3–4 -->
+<section class="page">
+  <p class="eyebrow">Step 3</p>
+  <h2>Set a realistic budget &amp; timeline</h2>
+  <p>Budget follows scope — never the other way round. Use these typical ranges as a sanity check:</p>
+  <table>
+    <tr><th>Project type</th><th>Typical timeline</th><th>Main cost drivers</th></tr>
+    <tr><td>Business website</td><td>4–8 weeks</td><td>Pages, content, integrations, CMS</td></tr>
+    <tr><td>E-commerce store</td><td>8–14 weeks</td><td>Catalogue size, payments, logistics</td></tr>
+    <tr><td>Mobile app MVP</td><td>10–16 weeks</td><td>Platforms, backend, offline needs</td></tr>
+    <tr><td>Custom business software</td><td>12–24 weeks</td><td>Workflows, roles, data migration</td></tr>
+  </table>
+  <ul class="check">
+    <li>Reserve 15–20% contingency for discoveries during development.</li>
+    <li>Budget for year one after launch: hosting, maintenance and improvements (~15–25% of build).</li>
+    <li>Plan content (copy, images, data) — it's the most common cause of delay.</li>
+  </ul>
+
+  <p class="eyebrow" style="margin-top:8mm">Step 4</p>
+  <h2>Choose technology for the next 5 years</h2>
+  <div class="cols">
+    <div>
+      <h3>Ask these questions</h3>
+      <ul class="check">
+        <li>Can we hire developers for it in 3 years?</li>
+        <li>Will it handle 10× today's users?</li>
+        <li>Can our team edit content without a developer?</li>
+        <li>Does it integrate with our CRM / ERP / payments?</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Proven, mainstream choices</h3>
+      <p><strong>Web:</strong> Next.js / React, Node.js<br/><strong>Mobile:</strong> React Native or Flutter<br/><strong>Data:</strong> MongoDB, MySQL / PostgreSQL<br/><strong>Content:</strong> headless CMS or WordPress<br/><strong>Immersive:</strong> Three.js / WebXR</p>
+    </div>
+  </div>
+  <div class="footer"><span>Software Project Planning Guide</span><span>4</span></div>
+</section>
+
+<!-- 5 · Steps 5–6 -->
+<section class="page">
+  <p class="eyebrow">Step 5</p>
+  <h2>Choose a partner, not a vendor</h2>
+  <p>The cheapest quote often becomes the most expensive project. Compare partners on how they'll reduce your risk:</p>
+  <ul class="check">
+    <li>They asked about your business goals before talking about technology.</li>
+    <li>They showed relevant case studies with measurable results.</li>
+    <li>You'll see working software every 1–2 weeks, not only at the end.</li>
+    <li>You own the code, designs and accounts from day one.</li>
+    <li>Support, hosting and handover are defined in writing.</li>
+  </ul>
+
+  <p class="eyebrow" style="margin-top:8mm">Step 6</p>
+  <h2>Launch — then grow</h2>
+  <p>Launch day is the start of learning, not the finish line.</p>
+  <div class="cols">
+    <div>
+      <h3>Launch checklist</h3>
+      <ul class="check">
+        <li>Analytics &amp; conversion tracking live</li>
+        <li>Speed: pages load in under 3 seconds on mobile</li>
+        <li>SEO basics: titles, sitemap, redirects</li>
+        <li>Backups, monitoring and security updates</li>
+      </ul>
+    </div>
+    <div>
+      <h3>First 90 days</h3>
+      <ul class="check">
+        <li>Review the Step 1 metric every 2 weeks</li>
+        <li>Fix the top 3 drop-off points in your funnel</li>
+        <li>Ship the "should have" list in priority order</li>
+        <li>Collect user feedback before new features</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer"><span>Software Project Planning Guide</span><span>5</span></div>
+</section>
+
+<!-- 6 · Brief template + CTA -->
+<section class="page">
+  <p class="eyebrow">Your one-page brief</p>
+  <h2>Project brief template</h2>
+  <p>Fill this in and send it to any development partner — you'll get faster, more accurate quotes.</p>
+  <table>
+    <tr><th style="width:38%">Section</th><th>Your answer</th></tr>
+    <tr><td>Business outcome (Step 1)</td><td style="height:14mm"></td></tr>
+    <tr><td>Primary users &amp; their main task</td><td style="height:14mm"></td></tr>
+    <tr><td>Must-have features (max 7)</td><td style="height:22mm"></td></tr>
+    <tr><td>Integrations (CRM, payments, ERP…)</td><td style="height:12mm"></td></tr>
+    <tr><td>Budget range &amp; target launch date</td><td style="height:12mm"></td></tr>
+    <tr><td>Decision maker &amp; review cadence</td><td style="height:12mm"></td></tr>
+  </table>
+  <div class="box" style="background:#000;color:#f5f5f4;border-color:#000;border-left-color:#d4af37">
+    <strong style="color:#d4af37">Want a second opinion on your plan?</strong><br/>
+    Book a free 30-minute consultation with Riyadvi — we'll review your brief and suggest the fastest path to results. Or take the free Business Health Checkup at riyadvisoftwaretechnologies.com.
+  </div>
+  <div class="footer"><span>© Riyadvi Software Technologies</span><span>6</span></div>
+</section>
+</body>
+</html>

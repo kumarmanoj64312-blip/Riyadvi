@@ -28,7 +28,7 @@ export function AdminSidebar({ email }: { email: string }) {
   return (
     <aside className="border-b border-line bg-ink p-4 lg:sticky lg:top-0 lg:h-dvh lg:border-b-0 lg:border-r lg:p-6">
       <div className="flex items-center justify-between lg:block">
-        <Logo />
+        <Logo href="/admin" label="admin dashboard" />
         <p className="hidden text-xs text-subtle lg:mt-1 lg:block">Admin</p>
       </div>
       <nav aria-label="Admin" className="mt-4 flex gap-1 overflow-x-auto lg:mt-10 lg:flex-col">

@@ -5,12 +5,14 @@ import { siteConfig } from "@/lib/site";
  * Text wordmark + geometric mark (inline SVG: zero requests, crisp at any
  * size). The mark is a node-and-link triangle — a small echo of the 3D
  * "connected ecosystem" hero.
+ *
+ * `href`/`label` let other areas reuse it (the admin sidebar links to /admin).
  */
-export function Logo() {
+export function Logo({ href = "/", label = "home" }: { href?: string; label?: string }) {
   return (
     <Link
-      href="/"
-      aria-label={`${siteConfig.name} — home`}
+      href={href}
+      aria-label={`${siteConfig.name} — ${label}`}
       className="flex items-center gap-2.5 text-fg"
     >
       <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">

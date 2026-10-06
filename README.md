@@ -89,9 +89,8 @@ Requirements: Node.js ≥ 20.9, MongoDB (local or Atlas).
 ```bash
 # 1. Backend
 cd backend
-cp .env.example .env            # set MONGODB_URI, CORS_ORIGINS, admin credentials (see below)
+cp .env.example .env            # set MONGODB_URI, CORS_ORIGINS, ADMIN_EMAIL, ADMIN_PASSWORD
 npm install
-npm run hash-password -- "your admin password"   # paste output into ADMIN_PASSWORD_HASH
 npm run seed                    # upserts services, projects, posts, jobs (idempotent)
 npm run dev                     # http://localhost:5000/api/health
 
@@ -122,7 +121,7 @@ Content lives in `frontend/src/data/*.ts`. After editing it, run `npm run export
 |---|---|
 | `MONGODB_URI` | MongoDB connection string |
 | `CORS_ORIGINS` | Comma-separated allowed origins; must include the frontend domain |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` | The single admin account (bcrypt hash, never the plain password) |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | The single admin account. Optionally use `ADMIN_PASSWORD_HASH` (bcrypt, `npm run hash-password`) instead of the plain password |
 | `JWT_SECRET`, `JWT_EXPIRES_IN` | Session signing (32+ random chars) and lifetime |
 | `TRUST_PROXY` | Proxy hops in front of the app (2 on Vercel → Render) so rate limits see real IPs |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`, `NOTIFY_TO` | Optional email notifications (disabled when `SMTP_HOST` is empty) |
@@ -162,7 +161,7 @@ All responses: `{ success, message, data?, errors?: [{ field, message }] }`.
 
 1. **MongoDB Atlas:** create the cluster and user as above.
 2. **Backend → Render:** New → Blueprint → this repo (uses `render.yaml`, root `backend/`). Fill in
-   `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, and set `CORS_ORIGINS` to the Vercel URL.
+   `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and set `CORS_ORIGINS` to the Vercel URL.
    Seed once from your machine: `cd backend && MONGODB_URI="<atlas uri>" npm run seed`.
 3. **Frontend → Vercel:** import the repo, **Root Directory = `frontend`**, set `BACKEND_URL` to the
    Render URL, `CONTENT_SOURCE=api`, `NEXT_PUBLIC_SITE_URL` and the contact variables, then deploy.

@@ -25,7 +25,7 @@ services:
         sync: false
       - key: ADMIN_EMAIL
         sync: false
-      - key: ADMIN_PASSWORD_HASH # npm run hash-password -- "<password>"
+      - key: ADMIN_PASSWORD # plain password (or use ADMIN_PASSWORD_HASH with a bcrypt hash)
         sync: false
       - key: JWT_SECRET # 32+ random characters
         generateValue: true

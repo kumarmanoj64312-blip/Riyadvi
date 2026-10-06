@@ -56,8 +56,10 @@ src/
 
 ## Admin credentials
 
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`. Optional, stronger: store a bcrypt hash instead.
+
 ```bash
-npm run hash-password -- "a long unique password"   # → paste into ADMIN_PASSWORD_HASH
+npm run hash-password -- "a long unique password"   # → ADMIN_PASSWORD_HASH (replaces ADMIN_PASSWORD)
 node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"   # → JWT_SECRET
 ```
 

@@ -27,14 +27,20 @@ function safeEqual(a, b) {
   return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
 }
 
+/** SHA-256 so both sides have equal length (timingSafeEqual needs that). */
+const digest = (value) => crypto.createHash("sha256").update(value).digest("hex");
+
 /**
  * Verifies the single admin's credentials and returns a signed session token.
  * Wrong email and wrong password produce the same error and similar timing
- * (bcrypt runs either way), so attackers can't probe which one was wrong.
+ * (the password check runs either way), so attackers can't probe which one was wrong.
+ * Password: plain ADMIN_PASSWORD (constant-time compare) or bcrypt ADMIN_PASSWORD_HASH.
  */
 export async function login(email, password) {
   const emailOk = safeEqual(String(email).trim().toLowerCase(), env.ADMIN_EMAIL);
-  const passwordOk = await bcrypt.compare(String(password), env.ADMIN_PASSWORD_HASH);
+  const passwordOk = env.ADMIN_PASSWORD_HASH
+    ? await bcrypt.compare(String(password), env.ADMIN_PASSWORD_HASH)
+    : safeEqual(digest(String(password)), digest(env.ADMIN_PASSWORD));
   if (!emailOk || !passwordOk) throw new ApiError(401, "Invalid email or password.");
 
   return jwt.sign({ sub: env.ADMIN_EMAIL, role: "admin" }, env.JWT_SECRET, {

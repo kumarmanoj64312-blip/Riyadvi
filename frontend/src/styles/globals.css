@@ -1,0 +1,132 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/*
+ * ─── Design tokens ────────────────────────────────────────────────────────
+ * Single source of truth for the brand. Tailwind v4 turns every token below
+ * into utilities (e.g. --color-gold → bg-gold / text-gold / border-gold).
+ * WebGL code cannot read CSS, so src/lib/theme.ts mirrors the colour values
+ * for Three.js — keep both in sync.
+ *
+ * Contrast (WCAG AA, checked against #000):
+ *   gold    #D4AF37 ≈ 10:1   → fine for body text and UI
+ *   muted   #A1A1AA ≈ 8:1    → secondary text
+ *   subtle  #8A8A93 ≈ 6:1    → captions / meta (also ≥ 4.5:1 on surface-3)
+ */
+@theme {
+  /* Brand */
+  --color-gold: #d4af37;
+  --color-gold-light: #f5e27a;
+  --color-gold-dark: #b8941f;
+
+  /* Surfaces: pure black page, layered near-blacks for depth */
+  --color-ink: #000000;
+  --color-surface: #0a0a0a;
+  --color-surface-2: #111111;
+  --color-surface-3: #1a1a1a;
+
+  /* Text */
+  --color-fg: #f5f5f4;
+  --color-muted: #a1a1aa;
+  --color-subtle: #8a8a93;
+
+  /* Hairlines and glass */
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+  --color-glass: rgb(255 255 255 / 0.04);
+
+  /* Motion: one signature easing used by CSS, GSAP and Motion */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layout */
+  --container-site: 80rem;
+
+  /* Animations (→ animate-scroll-cue) */
+  --animate-scroll-cue: scroll-cue 2.2s var(--ease-premium) infinite;
+  @keyframes scroll-cue {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+  }
+}
+
+/* Font variable is injected by next/font on <html>, so it must be "inline". */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  /* Visible, on-brand keyboard focus everywhere (a11y requirement). */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Reduced motion: neutralise CSS animations site-wide.
+     JS animations (GSAP / Motion / R3F) check the same media query in code. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ─── Brand utilities ───────────────────────────────────────────────────── */
+
+/* Metallic gold text: gradient clipped to glyphs. */
+@utility text-gold-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--color-gold-dark) 0%,
+    var(--color-gold) 30%,
+    var(--color-gold-light) 50%,
+    var(--color-gold) 70%,
+    var(--color-gold-dark) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Frosted glass panel used for navbar, cards and modals. */
+@utility glass {
+  background-color: rgb(10 10 10 / 0.6);
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* Centered page container with the 16px mobile gutter. */
+@utility container-site {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}

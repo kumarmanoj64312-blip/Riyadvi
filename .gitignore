@@ -1,0 +1,23 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Dependencies & builds (each app also has its own .gitignore)
+node_modules/
+
+# Env files — commit only the *.example templates
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Local uploads (backend)
+backend/uploads/
+
+# Assignment brief (private — not part of the deliverable)
+FULL STACK DEVELOPER*.pdf

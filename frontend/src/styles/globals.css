@@ -139,12 +139,13 @@
 }
 
 /*
- * Home page only: wider side spacing for page content (navbar & footer keep
- * the standard full-width gutter). Scales with the screen: 24px on mobile,
- * ~7% of the width from `lg` (≈72px @1024, 100px @1440, 134px @1920).
- * Unlayered on purpose, so it overrides the container-site utility here only.
+ * Page content (everything inside <main>, on every page): wider side spacing.
+ * Navbar (<header>) and footer keep the standard full-width gutter.
+ * Scales with the screen: 24px on mobile, ~7% of the width from `lg`
+ * (≈72px @1024, 100px @1440, 134px @1920). Unlayered on purpose, so it
+ * overrides the container-site utility inside <main> only.
  */
-.home-content .container-site {
+main .container-site {
   @media (width >= 64rem) {
     padding-inline: max(3rem, 7vw);
   }

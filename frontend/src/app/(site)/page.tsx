@@ -15,8 +15,7 @@ import { getTechnologies } from "@/lib/content";
 export default async function HomePage() {
   const technologies = await getTechnologies();
   return (
-    // .home-content → extra left/right spacing for home sections only (see globals.css)
-    <div className="home-content">
+    <>
       <Hero />
       <TransformationStory />
       <ServicesSection />
@@ -24,6 +23,6 @@ export default async function HomePage() {
       <WhyRiyadvi />
       <FeaturedWork />
       <LeadCtas />
-    </div>
+    </>
   );
 }

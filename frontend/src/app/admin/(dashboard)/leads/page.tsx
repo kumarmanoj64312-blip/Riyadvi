@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { adminFetch, type Paginated } from "@/lib/adminServer";
+import { adminList } from "@/lib/adminServer";
 import { DataTable } from "@/components/admin/DataTable";
 import { DateCell, PersonCell } from "@/components/admin/cells";
 import { StatusSelect } from "@/components/admin/StatusSelect";
@@ -11,7 +11,7 @@ type Row = { id: string; name: string; email: string; phone: string; company: st
 export default async function LeadMagnetPage({ searchParams }: PageProps<"/admin/leads">) {
   const { q, status, page } = (await searchParams) as Record<string, string | undefined>;
   const query = { q, status, page };
-  const data = await adminFetch<Paginated<Row>>("/lead-magnet", query);
+  const data = await adminList<Row>("lead-magnet", query);
 
   return (
     <DataTable

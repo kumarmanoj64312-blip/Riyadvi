@@ -2,17 +2,21 @@
  * Data-access layer — the ONLY place pages/components get content from.
  *
  *   CONTENT_SOURCE=local (default) → typed objects in src/data/*
- *   CONTENT_SOURCE=api             → Express backend (MongoDB), with the local
- *                                    data as a safety net if the API is down
+ *   CONTENT_SOURCE=api             → MongoDB (same app, via src/server), with
+ *                                    the local data as a safety net if the DB
+ *                                    is unreachable
  *
- * Swapping in Strapi / Sanity / WordPress later means changing `fromApi`
+ * Swapping in Strapi / Sanity / WordPress later means changing `fromDb`
  * here — no component changes.
  *
- * "Add a service without rebuilding": with the API source, fetches are cached
- * for REVALIDATE seconds (ISR). A new DB record appears on the next
- * revalidation, and an unknown /services/[slug] is rendered on demand because
- * dynamic params are allowed (Next's default).
+ * "Add a service without rebuilding": with the DB source, query results are
+ * cached for REVALIDATE seconds (ISR via unstable_cache). A new DB record
+ * appears on the next revalidation, and an unknown /services/[slug] is
+ * rendered on demand because dynamic params are allowed (Next's default).
  */
+import { unstable_cache } from "next/cache";
+import { connectDB } from "@/server/config/db";
+import { contentServices, type ContentCollection } from "@/server/services/content.service";
 import { services as localServices } from "@/data/services";
 import { projects as localProjects } from "@/data/projects";
 import { transformationStages as localStages } from "@/data/transformation";
@@ -23,24 +27,29 @@ import { jobs as localJobs } from "@/data/jobs";
 import type { CompanyProfile, Job, Milestone, Post, Project, Service, Technology, TransformationStage } from "@/types/content";
 
 const SOURCE = process.env.CONTENT_SOURCE === "api" ? "api" : "local";
-const API_URL = process.env.BACKEND_URL;
 const REVALIDATE = 60; // seconds
 
 /**
- * GET {BACKEND_URL}/api{path} → `data` field of our standard response shape
- * ({ success, message, data }). Returns null on any failure so callers can
- * fall back to local content instead of breaking the page.
+ * Reads a published collection (or one item by slug) straight from MongoDB —
+ * the same content service the public /api routes use, without an HTTP hop.
+ * Results are serialised to plain JSON and cached for REVALIDATE seconds.
+ * Returns null on any failure (DB down, unknown slug, env missing at build
+ * time) so callers fall back to local content instead of breaking the page.
  */
-async function fromApi<T>(path: string, tags: string[]): Promise<T | null> {
-  if (SOURCE !== "api" || !API_URL) return null;
+async function fromDb<T>(collection: ContentCollection, slug: string | null, tags: string[]): Promise<T | null> {
+  if (SOURCE !== "api") return null;
   try {
-    const res = await fetch(`${API_URL}/api${path}`, {
-      next: { revalidate: REVALIDATE, tags },
-      signal: AbortSignal.timeout(5000), // a sleeping backend must not hang the page
-    });
-    if (!res.ok) return null;
-    const json = (await res.json()) as { success: boolean; data?: T };
-    return json.success && json.data ? json.data : null;
+    const load = unstable_cache(
+      async () => {
+        await connectDB();
+        const service = contentServices[collection];
+        const result = slug ? await service.getBySlug(slug) : await service.list();
+        return JSON.parse(JSON.stringify(result)) as T; // toJSON: `id` instead of `_id`
+      },
+      ["content", collection, slug ?? "*"],
+      { revalidate: REVALIDATE, tags },
+    );
+    return await load();
   } catch {
     return null;
   }
@@ -49,22 +58,22 @@ async function fromApi<T>(path: string, tags: string[]): Promise<T | null> {
 /* ─── Services ─────────────────────────────────────────────────────────── */
 
 export async function getServices(): Promise<Service[]> {
-  return (await fromApi<Service[]>("/services", ["services"])) ?? localServices;
+  return (await fromDb<Service[]>("services", null, ["services"])) ?? localServices;
 }
 
 export async function getService(slug: string): Promise<Service | null> {
-  const remote = await fromApi<Service>(`/services/${encodeURIComponent(slug)}`, ["services", `service:${slug}`]);
+  const remote = await fromDb<Service>("services", slug, ["services", `service:${slug}`]);
   return remote ?? localServices.find((s) => s.slug === slug) ?? null;
 }
 
 /* ─── Portfolio ────────────────────────────────────────────────────────── */
 
 export async function getProjects(): Promise<Project[]> {
-  return (await fromApi<Project[]>("/projects", ["projects"])) ?? localProjects;
+  return (await fromDb<Project[]>("projects", null, ["projects"])) ?? localProjects;
 }
 
 export async function getProject(slug: string): Promise<Project | null> {
-  const remote = await fromApi<Project>(`/projects/${encodeURIComponent(slug)}`, ["projects", `project:${slug}`]);
+  const remote = await fromDb<Project>("projects", slug, ["projects", `project:${slug}`]);
   return remote ?? localProjects.find((p) => p.slug === slug) ?? null;
 }
 
@@ -105,12 +114,12 @@ export async function getCompanyProfile(): Promise<CompanyProfile> {
 const byNewest = (a: Post, b: Post) => b.publishedAt.localeCompare(a.publishedAt);
 
 export async function getPosts(): Promise<Post[]> {
-  const list = (await fromApi<Post[]>("/posts", ["posts"])) ?? localPosts;
+  const list = (await fromDb<Post[]>("posts", null, ["posts"])) ?? localPosts;
   return [...list].sort(byNewest);
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
-  const remote = await fromApi<Post>(`/posts/${encodeURIComponent(slug)}`, ["posts", `post:${slug}`]);
+  const remote = await fromDb<Post>("posts", slug, ["posts", `post:${slug}`]);
   return remote ?? localPosts.find((p) => p.slug === slug) ?? null;
 }
 
@@ -137,11 +146,11 @@ export function readingMinutes(post: Post): number {
 /* ─── Careers ─────────────────────────────────────────────────────────── */
 
 export async function getJobs(): Promise<Job[]> {
-  const list = (await fromApi<Job[]>("/jobs", ["jobs"])) ?? localJobs;
+  const list = (await fromDb<Job[]>("jobs", null, ["jobs"])) ?? localJobs;
   return list.filter((j) => j.open);
 }
 
 export async function getJob(slug: string): Promise<Job | null> {
-  const remote = await fromApi<Job>(`/jobs/${encodeURIComponent(slug)}`, ["jobs", `job:${slug}`]);
+  const remote = await fromDb<Job>("jobs", slug, ["jobs", `job:${slug}`]);
   return remote ?? localJobs.find((j) => j.slug === slug) ?? null;
 }

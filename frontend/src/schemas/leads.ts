@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 /*
- * Client-side form schemas. They MIRROR the backend validators
- * (backend/src/validators) so users get instant inline feedback; the server
+ * Client-side form schemas. They MIRROR the server validators
+ * (src/server/validators) so users get instant inline feedback; the server
  * re-validates everything anyway — the client is never trusted.
  */
 

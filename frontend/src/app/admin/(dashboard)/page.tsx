@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { adminFetch, type Paginated } from "@/lib/adminServer";
+import { adminList, adminStats } from "@/lib/adminServer";
 import { PersonCell, DateCell } from "@/components/admin/cells";
 import { StatusSelect } from "@/components/admin/StatusSelect";
 
@@ -17,8 +17,8 @@ const CARDS = [
 /** /admin — totals per lead type + the latest enquiries to act on. */
 export default async function AdminDashboard() {
   const [stats, latest] = await Promise.all([
-    adminFetch<Record<string, Stat>>("/stats"),
-    adminFetch<Paginated<Enquiry>>("/enquiries", { limit: "5" }),
+    adminStats<Record<string, Stat>>(),
+    adminList<Enquiry>("enquiries", { limit: 5 }),
   ]);
 
   return (

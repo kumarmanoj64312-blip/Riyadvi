@@ -1,7 +1,7 @@
 /**
- * Browser → backend client for form submissions.
+ * Browser → API client for form submissions.
  *
- * Calls same-origin `/api/*` (proxied to Express by next.config rewrites) and
+ * Calls same-origin `/api/*` (Route Handlers in src/app/api) and
  * normalises our standard response shape into a simple result:
  *   { ok: true,  message, data }
  *   { ok: false, message, fieldErrors: { email: "…" } }
@@ -13,8 +13,8 @@ export type ApiResult<T = unknown> =
 
 type ApiBody<T> = { success: boolean; message: string; data?: T; errors?: { field: string; message: string }[] };
 
-// Generous: a free-tier backend can take ~30s to wake from sleep.
-const TIMEOUT_MS = 45_000;
+// Generous: a cold serverless start + first DB connection can take a few seconds.
+const TIMEOUT_MS = 30_000;
 
 export async function postJson<T = unknown>(path: string, body: unknown): Promise<ApiResult<T>> {
   try {
@@ -46,8 +46,8 @@ export async function postJson<T = unknown>(path: string, body: unknown): Promis
   }
 }
 
-/** Fire-and-forget ping that wakes a sleeping free-tier backend early. */
-export function warmUpBackend() {
+/** Fire-and-forget ping that warms the API function and opens the DB connection early. */
+export function warmUpApi() {
   fetch("/api/health", { cache: "no-store" }).catch(() => {});
 }
 

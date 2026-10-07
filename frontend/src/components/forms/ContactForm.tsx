@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, type ContactValues } from "@/schemas/leads";
-import { postJson, warmUpBackend } from "@/lib/apiClient";
+import { postJson, warmUpApi } from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
 import { Field, FormSelect, Honeypot, Input, Textarea } from "@/components/forms/fields";
 import { FormError, FormSuccess } from "@/components/forms/FormStatus";
@@ -40,8 +40,8 @@ export function ContactForm({ requirements, defaultRequirement = "" }: Props) {
     mode: "onTouched", // validate a field once the user leaves it
   });
 
-  // Wake a sleeping free-tier backend while the user is still typing.
-  useEffect(() => warmUpBackend(), []);
+  // Warm the API function + DB connection while the user is still typing.
+  useEffect(() => warmUpApi(), []);
 
   const onSubmit = async (values: ContactValues) => {
     const result = await postJson("/contact", { ...values, sourcePage: pathname });

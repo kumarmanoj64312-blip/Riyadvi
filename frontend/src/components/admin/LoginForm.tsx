@@ -18,7 +18,7 @@ type Values = z.infer<typeof schema>;
 
 /**
  * POST /api/admin/login → the API sets an httpOnly session cookie (same
- * origin thanks to the /api proxy). Nothing is stored in localStorage.
+ * origin — the API is part of this app). Nothing is stored in localStorage.
  */
 export function LoginForm() {
   const router = useRouter();

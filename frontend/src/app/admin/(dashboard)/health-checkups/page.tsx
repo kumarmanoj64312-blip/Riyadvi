@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { adminFetch, type Paginated } from "@/lib/adminServer";
+import { adminList } from "@/lib/adminServer";
 import { DataTable } from "@/components/admin/DataTable";
 import { DateCell, Muted, PersonCell } from "@/components/admin/cells";
 import { StatusSelect } from "@/components/admin/StatusSelect";
@@ -22,7 +22,7 @@ type Row = {
 export default async function HealthCheckupsPage({ searchParams }: PageProps<"/admin/health-checkups">) {
   const { q, status, page } = (await searchParams) as Record<string, string | undefined>;
   const query = { q, status, page };
-  const data = await adminFetch<Paginated<Row>>("/health-checkups", query);
+  const data = await adminList<Row>("health-checkups", query);
 
   return (
     <DataTable

@@ -2,7 +2,7 @@ import type { Service } from "@/types/content";
 
 /**
  * Local service content — the fallback/seed source for the data-access layer
- * (lib/content.ts). The backend seeds MongoDB from the same shape, so pages
+ * (lib/content.ts). `npm run seed` loads MongoDB from the same shape, so pages
  * render identically from either source.
  *
  * Adding a service = adding an object here (or a DB record). The template at

@@ -1,18 +1,30 @@
 import type { NextConfig } from "next";
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:5000";
-
 const nextConfig: NextConfig = {
   /**
-   * The browser always calls `/api/*` on the SAME origin as the site; Next
-   * proxies it to the Express backend. Benefits:
-   *  - no CORS round-trips for the visitor
-   *  - first-party cookies for the admin login (Step 10) — cross-site cookies
-   *    between vercel.app and onrender.com are blocked by modern browsers
-   *  - the backend URL can change without touching client code
+   * The API lives in this same app (src/app/api/** Route Handlers), so there
+   * is no backend URL and no proxy: the browser calls same-origin `/api/*`,
+   * the admin cookie is always first-party, and no CORS is needed.
+   *
+   * Security headers (what helmet() did for the Express API) for every route.
    */
-  async rewrites() {
-    return [{ source: "/api/:path*", destination: `${BACKEND_URL}/api/:path*` }];
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+      {
+        // API responses are data (often private): never cached by browsers or CDNs.
+        source: "/api/:path*",
+        headers: [{ key: "Cache-Control", value: "no-store" }],
+      },
+    ];
   },
 };
 

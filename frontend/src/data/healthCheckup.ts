@@ -3,9 +3,9 @@
  *
  * One config drives three things:
  *   1. the multi-step form UI (frontend renders questions from it)
- *   2. server-side validation (backend builds Zod rules from the exported JSON)
+ *   2. server-side validation (src/server builds Zod rules from this same module)
  *   3. scoring + recommendations (option `score`, question `area`, `recommends`)
- * Adding/changing a question = editing this file (+ `npm run export:content`).
+ * Adding/changing a question = editing this file — form and API update together.
  *
  * Scoring: each scored question contributes 0–10 points to its `area`;
  * area score = points / max × 100; overall = average of the areas.

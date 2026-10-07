@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { checkupSteps } from "@/data/healthCheckup";
 import { checkupFormSchema, describeAnswer, fieldsForStep, type CheckupFormValues, type CheckupResult } from "@/lib/checkup";
-import { postJson, warmUpBackend } from "@/lib/apiClient";
+import { postJson, warmUpApi } from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
 import { Field, Honeypot, Input } from "@/components/forms/fields";
 import { FormError } from "@/components/forms/FormStatus";
@@ -85,7 +85,7 @@ export function HealthCheckup({ services }: { services: ServiceSummary[] }) {
 
   // Restore saved progress after hydration (server render always starts at step 0).
   useEffect(() => {
-    warmUpBackend();
+    warmUpApi();
     const saved = storage.read();
     if (!saved?.answers) return;
     reset({ ...getValues(), answers: saved.answers });

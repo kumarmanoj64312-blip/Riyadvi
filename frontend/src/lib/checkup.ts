@@ -3,12 +3,12 @@ import { checkupSteps, type CheckupQuestion } from "@/data/healthCheckup";
 
 /*
  * Client-side logic for the Business Health Checkup, derived from the same
- * config the backend validates and scores with (data/healthCheckup.ts).
+ * config the server validates and scores with (data/healthCheckup.ts).
  */
 
 export const allQuestions = checkupSteps.flatMap((s) => s.questions);
 
-/** Zod rule for one question — mirrors backend/src/services/healthCheckup.service.js. */
+/** Zod rule for one question — mirrors server/services/healthCheckup.service.ts. */
 function ruleFor(q: CheckupQuestion) {
   const values = (q.options ?? []).map((o) => o.value) as [string, ...string[]];
   switch (q.type) {

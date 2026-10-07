@@ -1,12 +1,12 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { adminFetch } from "@/lib/adminServer";
+import { adminMe } from "@/lib/adminServer";
 
 /**
  * Protected admin shell. Verifies the session on the SERVER (GET /me) before
  * rendering anything — invalid/missing session → redirect to /admin/login.
  */
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const me = await adminFetch<{ email: string }>("/me");
+  const me = await adminMe();
   return (
     <div className="lg:grid lg:min-h-dvh lg:grid-cols-[264px_1fr]">
       <AdminSidebar email={me.email} />

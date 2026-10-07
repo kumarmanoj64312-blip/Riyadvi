@@ -1,7 +1,7 @@
 import type { Project } from "@/types/content";
 
 /**
- * Portfolio case studies (local source for lib/content.ts; the backend seeds
+ * Portfolio case studies (local source for lib/content.ts; `npm run seed` loads
  * MongoDB from the same shape).
  *
  * ⚠️ SAMPLE CONTENT: client names come from Riyadvi's portfolio; the

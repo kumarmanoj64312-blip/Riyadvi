@@ -50,7 +50,8 @@ export function Navbar() {
         </a>
 
         <nav aria-label="Main" className="container-site flex h-16 items-center justify-between md:h-20">
-          <Logo />
+          {/* Navbar logo opens the admin dashboard (logged-out users get the admin login). */}
+          <Logo href="/admin" label="admin dashboard" />
 
           {/* Desktop links */}
           <ul className="hidden items-center gap-1 lg:flex">

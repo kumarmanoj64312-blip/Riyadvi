@@ -39,7 +39,7 @@
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Layout */
-  --container-site: 1200px;
+  --container-site: 100%;
 
   /* Animations (→ animate-scroll-cue) */
   --animate-scroll-cue: scroll-cue 2.2s var(--ease-premium) infinite;
@@ -121,8 +121,9 @@
 }
 
 /*
- * THE shared page container (navbar, hero and every section) — equivalent to
- * `w-full max-w-[1200px] mx-auto px-6 lg:px-8`, so all edges line up.
+ * THE shared page container (navbar, hero and every section): full width with
+ * a consistent side gutter (24px → 48px → 64px), so all edges line up and
+ * there are no large empty margins on wide screens.
  */
 @utility container-site {
   width: 100%;
@@ -130,6 +131,9 @@
   margin-inline: auto;
   padding-inline: 1.5rem;
   @media (width >= 64rem) {
-    padding-inline: 2rem;
+    padding-inline: 3rem;
+  }
+  @media (width >= 96rem) {
+    padding-inline: 4rem;
   }
 }

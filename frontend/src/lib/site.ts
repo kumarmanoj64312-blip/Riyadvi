@@ -27,6 +27,7 @@ export type NavLink = { label: string; href: string };
 
 /** Primary navigation (navbar + mobile menu). */
 export const mainNav: NavLink[] = [
+  { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },

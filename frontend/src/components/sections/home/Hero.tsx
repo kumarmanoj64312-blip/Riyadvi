@@ -42,7 +42,7 @@ export function Hero() {
         </div>
 
         {/* Right column — 3D graphic, sized by this box (not the window) */}
-        <div className="relative mx-auto aspect-square w-full max-w-[360px] lg:ml-auto lg:mr-0 lg:max-w-[520px]">
+        <div className="relative mx-auto aspect-square w-full max-w-[360px] lg:ml-auto lg:mr-0 lg:max-w-[560px] xl:max-w-[640px] 2xl:max-w-[760px]">
           <SceneView scene="hero" fallback={<HeroFallback />} className="absolute inset-0" />
         </div>
       </div>

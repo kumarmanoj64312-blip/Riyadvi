@@ -21,3 +21,6 @@ backend/uploads/
 
 # Assignment brief (private — not part of the deliverable)
 FULL STACK DEVELOPER*.pdf
+
+.vercel
+.env*

@@ -6,7 +6,7 @@ real-time 3D throughout, a working lead pipeline and an admin dashboard.
 
 | | URL |
 |---|---|
-| **Website + API (Vercel)** | `TODO: https://<project>.vercel.app` (health check: `/api/health`) |
+| **Website + API (Vercel)** | https://riyadvi-seven.vercel.app (health check: [/api/health](https://riyadvi-seven.vercel.app/api/health)) |
 
 > One Next.js app serves both the pages and the REST API (Route Handlers under `/api`), so there is a
 > single deployment, no CORS and no sleeping backend to wake.

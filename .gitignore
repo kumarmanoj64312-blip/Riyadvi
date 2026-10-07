@@ -16,11 +16,8 @@ node_modules/
 # Logs
 *.log
 
-# Local uploads (backend)
-backend/uploads/
-
 # Assignment brief (private — not part of the deliverable)
 FULL STACK DEVELOPER*.pdf
 
+# Vercel CLI project link
 .vercel
-.env*

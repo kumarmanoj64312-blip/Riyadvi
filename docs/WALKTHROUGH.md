@@ -64,35 +64,45 @@ See `docs/AI_LOG.md`.
 _TODO (me) — keep updated per step._
 
 ## 5. How do frontend, backend and DB connect?
+**One Next.js app is both the website and the API** (Route Handlers in `src/app/api`). There is a
+single deployment on Vercel, talking to MongoDB Atlas.
 ```
-Browser ──fetch /api/contact──▶ Next.js (Vercel) ──rewrite──▶ Express (Render) ──Mongoose──▶ MongoDB Atlas
-Next.js server ──lib/content.ts fetch (ISR 60s)──▶ Express GET /api/services|projects
+Browser ──fetch /api/contact──▶ Route Handler ──▶ src/server/services ──Mongoose──▶ MongoDB Atlas
+Server Components ──lib/content.ts (ISR 60s)──▶ src/server/services ──▶ MongoDB
+Admin pages ──lib/adminServer.ts (session)──▶ src/server/services ──▶ MongoDB
 ```
-- Browser only ever calls its own origin (`/api/*`); `next.config.ts` rewrites proxy to Express → no CORS
-  for visitors, and first-party cookies for the admin login later.
-- Express: `routes → middleware (rate limit → honeypot → zod validate) → controller → service → model`.
-  Every response is `{ success, message, data?, errors? }`; one central error handler maps errors to
-  status codes. Emails are sent after the DB save, in the background, so they can never lose a lead.
-- Content: Next server components fetch from the API with ISR; if the API is down they fall back to
-  bundled data. The same data seeds MongoDB (`npm run export:content` → `npm run seed`).
+- **Why I merged the backend into Next.js:** two deployments meant CORS, a proxy rewrite, a sleeping
+  free-tier server, two sets of env vars and a JSON copy of the questionnaire. Now: same origin (no
+  CORS, first-party admin cookie), one deploy, and server code imports the same `src/data` the UI uses.
+- **Still layered like Express:** `route.ts` (thin HTTP) → `src/server/services` (business logic) →
+  `src/server/models`. Middleware became small functions: `route()` = rate limit → DB connect →
+  try/catch error mapper; `formRoute()` adds JSON size cap → honeypot → Zod validation.
+  Every response is `{ success, message, data?, errors? }`.
+- **Serverless details I had to handle:** no `app.listen()` → the Mongo connection opens lazily and the
+  promise is cached on `globalThis` (reused across requests and hot reloads, reset if it fails); models
+  are re-registered safely on hot reload; env is validated on first use (so `next build` works without
+  secrets); emails are sent with `after()` so the function stays alive until they finish, after the
+  DB save, so they can never lose a lead.
+- **Pages don't call their own API over HTTP:** Server Components call the service functions directly
+  (an HTTP hop to yourself is wasted latency). The `/api` routes exist for the browser.
 
-**Admin & security** — single admin from env (bcrypt hash), JWT in an httpOnly SameSite=Lax cookie
-(never localStorage). Same-origin thanks to the `/api` rewrite, so it's a first-party cookie. Admin
-pages are Server Components that verify the session before rendering — no flash, nothing to bypass
-client-side. Status changes require JSON (CSRF), searches are regex-escaped, resumes stream from
-GridFS only with a session.
+**Admin & security** — admin account in MongoDB (bcrypt), JWT in an httpOnly SameSite=Lax cookie
+(never localStorage), same origin so always first-party. Admin pages are Server Components that verify
+the session before rendering — no flash, nothing to bypass client-side. Status changes require JSON and
+a same-origin `Origin` (CSRF), searches are regex-escaped, uploads are magic-byte checked, resumes stream
+from GridFS only with a session, and security headers are set in `next.config.ts`.
 
 ## 6. Adding a service/project/post/job without rebuilding?
 Pages never import content directly — they call `lib/content.ts` (`getServices`, `getService`…).
-- With `CONTENT_SOURCE=api` the data layer fetches from the Express API with ISR
-  (`next: { revalidate: 60, tags }`). A new MongoDB record shows up on the next revalidation.
+- With `CONTENT_SOURCE=api` the data layer reads MongoDB through the content service, cached with
+  `unstable_cache` (`revalidate: 60`, tags). A new MongoDB record shows up on the next revalidation.
 - `/services/[slug]` pre-renders known slugs via `generateStaticParams`; unknown slugs are rendered on
   first request (dynamic params allowed) and then cached — no redeploy.
 - The new service picks a 3D visual through its `sceneType` field (or `generic`), so even the 3D
   needs no code change.
-- If the API is down, the data layer falls back to the bundled content — pages never break.
-- **Proven:** a service inserted only into MongoDB rendered at `/services/cybersecurity` (HTTP 200) on
-  a production build that had never seen it.
+- If the database is unreachable, the data layer falls back to the bundled content — pages never break.
+- **Proven (again after the merge):** a service inserted only into MongoDB rendered at its URL (HTTP
+  200) on a production build that had never seen it, and refreshed after the 60 s window.
 
 ## 7. How was 3D optimized?
 Foundation in place from Step 1:

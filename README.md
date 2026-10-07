@@ -6,11 +6,10 @@ real-time 3D throughout, a working lead pipeline and an admin dashboard.
 
 | | URL |
 |---|---|
-| **Frontend (Vercel)** | `TODO: https://<project>.vercel.app` |
-| **Backend API (Render)** | `TODO: https://<service>.onrender.com/api/health` |
+| **Website + API (Vercel)** | `TODO: https://<project>.vercel.app` (health check: `/api/health`) |
 
-> The free Render instance sleeps after inactivity; the first request can take ~30–50 s. The site
-> pings the API on load to wake it, and forms wait up to 45 s.
+> One Next.js app serves both the pages and the REST API (Route Handlers under `/api`), so there is a
+> single deployment, no CORS and no sleeping backend to wake.
 
 ---
 
@@ -31,7 +30,7 @@ Guide · Admin dashboard · 404 / error pages.
 | Case studies | Rotatable phone / laptop showing the project's screens (runtime canvas textures); tap to switch screens |
 | About / Why Riyadvi | Scroll-driven timeline (GSAP: scrubbed line, CSS-3D swing-in, parallax years) |
 
-**Lead generation & backend:** contact/quote form · consultation booking · 6-step Business Health
+**Lead generation & API:** contact/quote form · consultation booking · 6-step Business Health
 Checkup with server-side scoring and recommendations · lead-magnet PDF download · job applications with
 resume upload · all stored in MongoDB · email notification to the team · admin dashboard with stats,
 search, status updates and resume download.
@@ -47,9 +46,9 @@ search, status updates and resume download.
 | Animation | GSAP 3 + ScrollTrigger, Lenis (smooth scroll), Motion 14 (LazyMotion) |
 | Forms | react-hook-form + Zod 4 (schemas mirror the server) |
 | State | zustand (low-frequency 3D state only; per-frame input lives in plain refs) |
-| Backend | Node.js 22, Express 5, Mongoose 9, Zod, helmet, cors, express-rate-limit, multer, nodemailer, jsonwebtoken, bcryptjs |
+| API (same app) | Next.js Route Handlers on Node.js 22, Mongoose 9, Zod, nodemailer, jsonwebtoken, bcryptjs |
 | Database | MongoDB (Atlas in production), GridFS for resumes |
-| Hosting | Vercel (frontend), Render (backend), MongoDB Atlas |
+| Hosting | Vercel (one project: pages + API), MongoDB Atlas |
 
 **3D libraries used:** three, @react-three/fiber, @react-three/drei.
 **Animation libraries used:** gsap (+ ScrollTrigger, @gsap/react), lenis, motion.
@@ -59,23 +58,37 @@ search, status updates and resume download.
 ## Architecture
 
 ```
-Browser ──fetch /api/*──▶ Next.js (Vercel) ──rewrite──▶ Express (Render) ──▶ MongoDB Atlas
-Next.js server ── lib/content.ts (ISR, 60 s, local fallback) ──▶ GET /api/services|projects|posts|jobs
+Browser ──fetch /api/*──▶ Route Handler (src/app/api) ──▶ src/server services ──▶ MongoDB Atlas
+Server Components ── lib/content.ts (ISR 60 s, local fallback) ──▶ src/server services ──▶ MongoDB
+Admin pages ──── lib/adminServer.ts (session check) ──────────▶ src/server services ──▶ MongoDB
 ```
 
+The API keeps the layered design of a classic Express backend, just inside the Next.js app:
+
+| Express concept | Here |
+|---|---|
+| `routes/` | `src/app/api/**/route.ts` — one file per endpoint, a few lines each |
+| middleware (rate limit, validate, honeypot, error handler) | small functions in `src/server/utils` composed by `route()` / `formRoute()` |
+| `controllers/` + `services/` | `src/server/services` (business logic, reused by pages and seeders) |
+| `models/` | `src/server/models` (Mongoose, hot-reload safe) |
+| `server.js` (`connect` + `listen`) | `src/server/config/db.ts`: lazy connection cached on `globalThis` for serverless |
+| helmet / cors | security headers in `next.config.ts`; CORS unnecessary (same origin) |
+| multer | `request.formData()` + size/type/magic-byte checks (`src/server/utils/upload.ts`) |
+
 ```
-/frontend   Next.js app
-  src/app            routes: (site) public pages, admin/ dashboard
+/frontend   Next.js app (website + API)
+  src/app            routes: (site) public pages, admin/ dashboard, api/ REST endpoints
+  src/server         API internals: config, models, validators, services, utils, seed
   src/components     sections, templates (Service/CaseStudy/BlogPost/Job), forms, admin
   src/three          canvas (one shared <Canvas>), scenes, fallbacks, state, utils
   src/data           typed content (services, projects, posts, jobs, checkup config…)
   src/lib            content.ts (data-access layer), device.ts (GPU tiering), apiClient…
-/backend    Express API — routes → controllers → services → models, middleware, validators, seed
+  scripts            seeders (npm run seed / seed:admin / seed:demo), hash-password
 /docs       AI_LOG.md (AI usage per step), WALKTHROUGH.md (interview notes)
 ```
 
 **Adding a service / project / post / job without rebuilding:** pages only read through
-`lib/content.ts`. With `CONTENT_SOURCE=api` it fetches from the API with ISR; a new MongoDB record
+`lib/content.ts`. With `CONTENT_SOURCE=api` it reads MongoDB with ISR; a new MongoDB record
 appears on the next revalidation, and unknown slugs render on first request. A new service picks an
 existing 3D visual through its `sceneType` field. *Verified:* a service inserted only into MongoDB
 rendered at its URL on a build that had never seen it.
@@ -87,52 +100,37 @@ rendered at its URL on a build that had never seen it.
 Requirements: Node.js ≥ 20.9, MongoDB (local or Atlas).
 
 ```bash
-# 1. Backend
-cd backend
-cp .env.example .env            # set MONGODB_URI, CORS_ORIGINS, ADMIN_EMAIL, ADMIN_PASSWORD
+cd frontend
+cp .env.example .env            # set MONGODB_URI, ADMIN_EMAIL, ADMIN_PASSWORD, JWT_SECRET
 npm install
 npm run seed                    # upserts content + admin account (idempotent); admin only: npm run seed:admin
 npm run seed:demo               # optional: fictional demo leads so the admin dashboard has data
-npm run dev                     # http://localhost:5000/api/health
-
-# 2. Frontend (new terminal)
-cd frontend
-cp .env.example .env.local
-npm install
-npm run dev                     # http://localhost:3000   (admin: /admin/login)
+npm run dev                     # http://localhost:3000 · API: /api/health · admin: /admin/login
 ```
 
-Content lives in `frontend/src/data/*.ts`. After editing it, run `npm run export:content` in
-`frontend`, then `npm run seed` in `backend`.
+Content lives in `frontend/src/data/*.ts`; `npm run seed` reads those files directly, so editing them
+and re-seeding is all it takes.
 
 ### Environment variables
 
-**Frontend** (`frontend/.env.local`, Vercel project settings)
+All in `frontend/.env` locally and in the Vercel project settings. Only `NEXT_PUBLIC_*` values reach
+the browser; everything else stays on the server.
 
 | Variable | Purpose |
 |---|---|
-| `BACKEND_URL` | Express base URL, used by the `/api` rewrite and server-side fetches. **Must be set before building** (rewrites are resolved at build time) |
-| `CONTENT_SOURCE` | `local` (bundled data) or `api` (MongoDB via the API, with local fallback). Use `api` in production |
+| `CONTENT_SOURCE` | `local` (bundled data) or `api` (MongoDB, with local fallback). Use `api` in production |
 | `NEXT_PUBLIC_SITE_URL` | Public URL (canonical links, sitemap, Open Graph) |
 | `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_CONTACT_PHONE`, `NEXT_PUBLIC_WHATSAPP_NUMBER`, `NEXT_PUBLIC_CALENDLY_URL` | Contact channels shown on the site |
-
-**Backend** (`backend/.env`, Render environment)
-
-| Variable | Purpose |
-|---|---|
 | `MONGODB_URI` | MongoDB connection string |
-| `CORS_ORIGINS` | Comma-separated allowed origins; must include the frontend domain |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | The admin account, written to MongoDB (bcrypt hash) by `npm run seed` / `seed:admin`; login checks the DB, falling back to these until seeded. Optionally use `ADMIN_PASSWORD_HASH` (bcrypt, `npm run hash-password`) instead of the plain password |
 | `JWT_SECRET`, `JWT_EXPIRES_IN` | Session signing (32+ random chars) and lifetime |
-| `TRUST_PROXY` | Proxy hops in front of the app (2 on Vercel → Render) so rate limits see real IPs |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`, `NOTIFY_TO` | Optional email notifications (disabled when `SMTP_HOST` is empty) |
 | `GUIDE_DOWNLOAD_URL` | Path of the lead-magnet PDF |
-| `NODE_ENV`, `PORT` | Runtime |
 
 ### Database setup
 
-MongoDB Atlas (free M0) → create a database user → network access `0.0.0.0/0` (Render has no fixed IP on
-the free plan) → copy the `mongodb+srv://…/riyadvi` string into `MONGODB_URI`. Collections and indexes
+MongoDB Atlas (free M0) → create a database user → network access `0.0.0.0/0` (Vercel functions have no fixed
+IP) → copy the `mongodb+srv://…/riyadvi` string into `MONGODB_URI`. Collections and indexes
 are created automatically; `npm run seed` loads the content and creates the admin account. Lead collections are never touched by the
 seed.
 
@@ -161,13 +159,11 @@ All responses: `{ success, message, data?, errors?: [{ field, message }] }`.
 ## Deployment
 
 1. **MongoDB Atlas:** create the cluster and user as above.
-2. **Backend → Render:** New → Blueprint → this repo (uses `render.yaml`, root `backend/`). Fill in
-   `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and set `CORS_ORIGINS` to the Vercel URL.
-   Seed once from your machine: `cd backend && MONGODB_URI="<atlas uri>" npm run seed`.
-3. **Frontend → Vercel:** import the repo, **Root Directory = `frontend`**, set `BACKEND_URL` to the
-   Render URL, `CONTENT_SOURCE=api`, `NEXT_PUBLIC_SITE_URL` and the contact variables, then deploy.
-4. Update `CORS_ORIGINS` on Render if the final Vercel domain differs, then smoke-test every form and
-   `/admin`.
+2. **Seed once** from your machine with the Atlas URI in `frontend/.env`: `cd frontend && npm run seed`.
+3. **Vercel:** import the repo, **Root Directory = `frontend`**, add the environment variables above
+   (`MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET`, `CONTENT_SOURCE=api`,
+   `NEXT_PUBLIC_SITE_URL`, contact variables), then deploy. Pages and API ship together.
+4. Smoke-test `/api/health` (should report `"db":"connected"`), every form and `/admin`.
 
 ---
 
@@ -200,11 +196,11 @@ The full per-step log (prompts, what was generated, bugs found, decisions) is in
 | | |
 |---|---|
 | **Tool** | Claude Code (Claude Opus), agentic coding in VS Code |
-| **Purpose** | Architecture planning, code generation for frontend/backend/3D, debugging, automated verification (type-check, lint, builds, Playwright E2E, Lighthouse, axe), documentation |
+| **Purpose** | Architecture planning, code generation for the UI, API and 3D, debugging, automated verification (type-check, lint, builds, Playwright E2E, Lighthouse, axe), documentation |
 | **Example prompt** | *"Deep analyze the full prompt and PDF; the main focus is 3D"* → produced the architecture plan (one shared canvas with Drei View, API + ISR content, GridFS resumes) that every later step followed. Each step was then approved with a short prompt after reviewing the plan. |
 | **What was generated** | Most of the code, in 11 reviewed steps, each verified on a real GPU and in mobile emulation |
 | **What was manually changed** | **TODO (me):** list the parameters, copy and code I changed myself (see the "make it yours" notes per step in the AI log) |
-| **Why this tool** | It reads the installed library versions' own docs and source before coding (Next 16, R3F 9, Drei 10, Express 5, Mongoose 9, Zod 4 are all newer than most training data) and verifies its own output end to end, which caught real bugs before they shipped |
+| **Why this tool** | It reads the installed library versions' own docs and source before coding (Next 16, R3F 9, Drei 10, Mongoose 9, Zod 4 are all newer than most training data) and verifies its own output end to end, which caught real bugs before they shipped |
 
 **Bugs found through AI-run testing** (details in the log): an admin login redirect loop (cookie path),
 a swallowed "Next" click in the multi-step form (layout shift at mousedown), 3D running on emulated GPUs
@@ -234,8 +230,11 @@ that only touched.
 - **Lead magnet is soft-gated:** the PDF is a static file, reachable by direct URL.
 - **Single admin account**, seeded into MongoDB from `.env`; no roles, user management UI or password-reset flow.
 - **Email** depends on the SMTP provider; some free hosts block SMTP ports (an HTTP email API is a drop-in
-  replacement in `notification.service.js`).
-- Render free tier cold starts; device tilt is not enabled on iOS (requires a permission prompt).
+  replacement in `src/server/services/notification.service.ts`).
+- **Rate limits are per server instance** (in-memory): on serverless each function instance counts
+  separately. Fine against casual abuse; use Redis/Upstash for strict global limits (one file to change).
+- Serverless cold starts add a second or two to the first API request; device tilt is not enabled on iOS
+  (requires a permission prompt).
 - Git history is grouped by feature, committed after development rather than live, so intermediate
   commits aren't guaranteed to build on their own.
 

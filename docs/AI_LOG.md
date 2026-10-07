@@ -181,3 +181,20 @@ and what was changed by hand. Feeds the **AI Tools Used** section of the README.
   - **Accessibility**: axe-core over 12 pages × 2 viewports → fixed `region` (WhatsApp button landmark) and `heading-order` (sr-only h2s) → **0 violations**; first Tab = "Skip to content". Reduced-motion story layout fixed (`self-start` for sticky).
 - **What I manually changed:** TODO (me)
 - **Why this tool:** Turned profiling data into targeted fixes and verified each one with A/B measurements instead of guesses.
+
+### 12. Merge the backend into the Next.js app (single full-stack app)
+- **AI Tool:** Claude Code (Claude Opus)
+- **Purpose:** Remove the separate Express deployment: one Next.js app serves the pages and the REST API.
+  Triggered by the separate API crashing on Vercel (`FUNCTION_INVOCATION_FAILED` — Express's
+  `app.listen()` server isn't a serverless function).
+- **Prompt:** "I don't want separate backend and frontend. I need to implement inside the frontend backend also. deep plan and do that no need to push the code"
+- **What was generated:**
+  - `src/server/` — the Express layers ported to TypeScript: `config` (lazy Zod env, cached serverless Mongo connection), `models` (hot-reload-safe `defineModel`), `validators`, `services` (unchanged business logic), `utils` (`route()` wrapper = rate limit + DB + central error mapper, `formRoute()`, in-memory rate limiter, multipart resume parser with magic-byte checks, admin guard + same-origin check)
+  - 21 Route Handlers in `src/app/api/**` with the same URLs and response shape → no client component changed
+  - Admin pages and `lib/content.ts` call services directly (no HTTP hop); content cached with `unstable_cache` (ISR 60 s)
+  - Health-checkup engine imports `src/data/healthCheckup.ts` directly (the exported JSON copy and `export:content` are gone)
+  - Seeders moved to `frontend/scripts` (`tsx`, env loaded with `@next/env` like `next dev`)
+  - Security headers in `next.config.ts` (replaces helmet); proxy rewrite, `BACKEND_URL`, CORS and `render.yaml` removed; `/backend` deleted
+- **Verified:** `tsc`, ESLint and `next build` clean; production server E2E against Atlas — all 5 forms (201), validation (400 per field), honeypot, malformed/non-JSON bodies, form rate limit (429), PDF upload + fake PDF + .exe rejection, admin login/wrong password, me, stats, search, unknown collection (404), status PATCH + invalid status + cross-origin (403), resume download byte-identical, logout, admin pages render + redirect when signed out or with a forged cookie, DB-only service page rendered without rebuild. Test records deleted afterwards.
+- **What I manually changed:** TODO (me)
+- **Why this tool:** Large refactor done as a careful port (same API contract) and verified end to end, so the UI needed zero changes.

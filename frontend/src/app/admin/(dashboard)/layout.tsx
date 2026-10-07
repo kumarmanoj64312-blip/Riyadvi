@@ -8,9 +8,9 @@ import { adminFetch } from "@/lib/adminServer";
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const me = await adminFetch<{ email: string }>("/me");
   return (
-    <div className="lg:grid lg:min-h-dvh lg:grid-cols-[240px_1fr]">
+    <div className="lg:grid lg:min-h-dvh lg:grid-cols-[264px_1fr]">
       <AdminSidebar email={me.email} />
-      <main id="main" className="min-w-0 p-4 sm:p-8">
+      <main id="main" className="min-w-0 p-4 sm:p-6 lg:p-10">
         {children}
       </main>
     </div>

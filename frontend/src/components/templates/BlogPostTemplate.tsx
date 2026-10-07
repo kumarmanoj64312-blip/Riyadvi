@@ -16,7 +16,9 @@ function Block({ block }: { block: PostBlock }) {
     case "list": {
       const List = block.ordered ? "ol" : "ul";
       return (
-        <List className={`mt-5 space-y-2 pl-6 text-lg text-muted ${block.ordered ? "list-decimal" : "list-disc"} marker:text-gold`}>
+        <List
+          className={`mt-5 space-y-2 pl-6 text-lg text-muted ${block.ordered ? "list-decimal" : "list-disc"} marker:text-gold`}
+        >
           {block.items.map((item) => (
             <li key={item} className="pl-1">
               {item}
@@ -44,52 +46,67 @@ function Block({ block }: { block: PostBlock }) {
   }
 }
 
-type Props = { post: Post; date: string; minutes: number; related: PostCardData[] };
+type Props = {
+  post: Post;
+  date: string;
+  minutes: number;
+  related: PostCardData[];
+};
 
 /** ONE template for every /blog/[slug] article. */
 export function BlogPostTemplate({ post, date, minutes, related }: Props) {
   return (
     <article>
-      <header className="pb-10 pt-32 md:pt-40">
-        <div className="container-site max-w-3xl">
-          <nav aria-label="Breadcrumb" className="text-sm text-subtle">
-            <Link href="/blog" className="hover:text-gold">
-              Blog
-            </Link>
-            <span aria-hidden="true"> / </span>
-            <span className="text-muted">{post.category}</span>
-          </nav>
-          <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-balance md:text-5xl">{post.title}</h1>
-          <p className="mt-5 text-xl text-muted">{post.excerpt}</p>
-          <p className="mt-6 text-sm text-subtle">
-            {post.author.name} · {post.author.role} · <time dateTime={post.publishedAt}>{date}</time> · {minutes} min read
-          </p>
-        </div>
-      </header>
+      {/* One page container + ONE centred reading column shared by header,
+          cover, body, tags and CTA → identical left/right edges. */}
+      <div className="container-site pb-16 pt-32 md:pt-40">
+        <div className="mx-auto w-full max-w-3xl">
+          <header className="pb-10">
+            <nav aria-label="Breadcrumb" className="text-sm text-subtle">
+              <Link href="/blog" className="hover:text-gold">
+                Blog
+              </Link>
+              <span aria-hidden="true"> / </span>
+              <span className="text-muted">{post.category}</span>
+            </nav>
+            <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-balance md:text-5xl">
+              {post.title}
+            </h1>
+            <p className="mt-5 text-xl text-muted">{post.excerpt}</p>
+            <p className="mt-6 text-sm text-subtle">
+              {post.author.name} · {post.author.role} · <time dateTime={post.publishedAt}>{date}</time> · {minutes} min
+              read
+            </p>
+          </header>
 
-      <div className="container-site max-w-5xl">
-        <PostCover accent={post.accent} category={post.category} large className="aspect-[21/9] rounded-3xl border border-line" />
-      </div>
+          <PostCover
+            accent={post.accent}
+            category={post.category}
+            large
+            className="aspect-[16/9] rounded-3xl border border-line"
+          />
 
-      <div className="container-site max-w-3xl pb-16 pt-6">
-        {post.body.map((block, i) => (
-          <Block key={i} block={block} />
-        ))}
+          <div className="pt-6">
+            {post.body.map((block, i) => (
+              <Block key={i} block={block} />
+            ))}
 
-        <ul aria-label="Tags" className="mt-12 flex flex-wrap gap-2 border-t border-line pt-8">
-          {post.tags.map((t) => (
-            <li key={t} className="rounded-full border border-line-strong px-3 py-1 text-sm text-muted">
-              #{t}
-            </li>
-          ))}
-        </ul>
+            <ul aria-label="Tags" className="mt-12 flex flex-wrap gap-2 border-t border-line pt-8">
+              {post.tags.map((t) => (
+                <li key={t} className="rounded-full border border-line-strong px-3 py-1 text-sm text-muted">
+                  #{t}
+                </li>
+              ))}
+            </ul>
 
-        <div className="mt-12 flex flex-col items-start gap-5 rounded-3xl border border-gold/30 bg-surface-2 p-8 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-lg font-semibold">Want this applied to your business?</p>
-            <p className="mt-1 text-sm text-muted">Start with our free 3-minute Business Health Checkup.</p>
+            <div className="mt-12 flex flex-col items-start gap-5 rounded-3xl border border-gold/30 bg-surface-2 p-8 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-lg font-semibold">Want this applied to your business?</p>
+                <p className="mt-1 text-sm text-muted">Start with our free 3-minute Business Health Checkup.</p>
+              </div>
+              <Button href="/business-health-checkup">Take the checkup</Button>
+            </div>
           </div>
-          <Button href="/business-health-checkup">Take the checkup</Button>
         </div>
       </div>
 

@@ -40,10 +40,11 @@ const edgesD = linesPath(
 
 export function HeroFallback() {
   return (
-    <div className="absolute inset-0 flex items-start justify-center pt-[12vh] lg:items-center lg:justify-end lg:pt-0 lg:pr-[4vw]">
+    // Fills the hero's square graphic box (sized by its column, not the window).
+    <div className="absolute inset-0 flex items-center justify-center">
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
-        className="w-[90vw] max-w-[640px] opacity-80 lg:w-[48vw]"
+        className="h-full w-full opacity-80"
         role="presentation"
       >
         <defs>

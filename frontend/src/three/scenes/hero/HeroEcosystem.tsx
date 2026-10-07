@@ -43,18 +43,13 @@ export default function HeroEcosystem({ activeRef, tier, reducedMotion }: SceneP
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const spin = useRef(0);
 
-  // Responsive placement: beside the headline on wide screens, above it on
-  // narrow ones. `viewport` = visible area in world units at z = 0.
+  // The View is the hero's own square graphic box, so the network is simply
+  // centred and scaled to fit it. `viewport` = visible area (world units) at
+  // z = 0; the network is ~5.8 units across, plus a margin for rotation.
   const size = useThree((s) => s.size);
   const viewport = visibleArea(FOV, CAMERA_Z, size);
-  const wide = size.width / size.height > 1.15;
-  // On portrait screens the *width* is the constraint: the network (~5.8
-  // world units across) is scaled to fit it, and lifted into the top half so
-  // the headline below stays readable.
-  const offset: [number, number, number] = wide
-    ? [viewport.width * 0.26, 0, 0]
-    : [0, viewport.height * 0.24, 0];
-  const scale = wide ? 0.82 : Math.min(0.68, viewport.width / 6.2);
+  const offset: [number, number, number] = [0, 0, 0];
+  const scale = Math.min(viewport.width, viewport.height) / 6.6;
 
   useFrame((_, delta) => {
     const rig = rigRef.current;
@@ -71,7 +66,8 @@ export default function HeroEcosystem({ activeRef, tier, reducedMotion }: SceneP
     // damp() = frame-rate independent exponential smoothing toward a target.
     rig.rotation.y = damp(rig.rotation.y, spin.current + pointer.x * 0.35 + scroll * 1.4, 3, dt);
     rig.rotation.x = damp(rig.rotation.x, -pointer.y * 0.2 + scroll * 0.35, 3, dt);
-    camera.position.z = damp(camera.position.z, CAMERA_Z - scroll * 2.5, 3, dt);
+    // Gentle dive on scroll — small enough that the network stays inside its box.
+    camera.position.z = damp(camera.position.z, CAMERA_Z - scroll * 1, 3, dt);
   });
 
   return (

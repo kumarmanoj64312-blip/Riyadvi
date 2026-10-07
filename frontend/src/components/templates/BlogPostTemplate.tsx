@@ -60,7 +60,7 @@ export function BlogPostTemplate({ post, date, minutes, related }: Props) {
       {/* One page container + ONE centred reading column shared by header,
           cover, body, tags and CTA → identical left/right edges. */}
       <div className="container-site pb-16 pt-32 md:pt-40">
-        <div className="mx-auto w-full max-w-3xl">
+        <div className="mx-auto w-full max-w-5xl">
           <header className="pb-10">
             <nav aria-label="Breadcrumb" className="text-sm text-subtle">
               <Link href="/blog" className="hover:text-gold">

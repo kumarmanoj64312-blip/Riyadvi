@@ -46,14 +46,17 @@ export async function listLeads(key: string, { status, q, page, limit }: ListQue
   const size = Math.min(Math.max(Number(limit) || 20, 1), 100);
   const current = Math.max(Number(page) || 1, 1);
 
-  const [items, total] = await Promise.all([
+  const [docs, total] = await Promise.all([
     Model.find(filter)
       .sort({ createdAt: -1 })
       .skip((current - 1) * size)
       .limit(size)
-      .select("-userAgent"),
+      .select("-userAgent -__v")
+      .lean(), // plain objects: no document hydration (the table only reads fields)
     Model.countDocuments(filter),
   ]);
+  // lean() skips toJSON, so expose `id` like the rest of the API does.
+  const items = docs.map(({ _id, ...rest }) => ({ id: String(_id), ...rest }));
   return { items, total, page: current, pages: Math.max(1, Math.ceil(total / size)), statuses };
 }
 
@@ -65,17 +68,30 @@ export async function updateStatus(key: string, id: string, status: string) {
   return doc;
 }
 
-/** Dashboard numbers: totals, "new" (unhandled) counts and last-7-day counts. */
+/**
+ * Dashboard numbers: totals, "new" (unhandled) counts and last-7-day counts.
+ *
+ * ONE aggregation per collection (a $group with conditional sums) instead of
+ * three countDocuments calls: 5 queries instead of 15. On serverless that
+ * matters more than raw query cost — fewer concurrent queries means fewer
+ * pooled connections to open (each a TLS handshake) on a cold start.
+ */
 export async function getStats() {
   const weekAgo = new Date(Date.now() - 7 * 24 * 3600 * 1000);
   const entries = await Promise.all(
     Object.entries(COLLECTIONS).map(async ([key, { Model }]) => {
-      const [total, unhandled, thisWeek] = await Promise.all([
-        Model.countDocuments(),
-        Model.countDocuments({ status: "new" }),
-        Model.countDocuments({ createdAt: { $gte: weekAgo } }),
+      const [row] = await Model.aggregate<{ total: number; new: number; thisWeek: number }>([
+        {
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            new: { $sum: { $cond: [{ $eq: ["$status", "new"] }, 1, 0] } },
+            thisWeek: { $sum: { $cond: [{ $gte: ["$createdAt", weekAgo] }, 1, 0] } },
+          },
+        },
+        { $project: { _id: 0 } },
       ]);
-      return [key, { total, new: unhandled, thisWeek }] as const;
+      return [key, row ?? { total: 0, new: 0, thisWeek: 0 }] as const;
     }),
   );
   return Object.fromEntries(entries);

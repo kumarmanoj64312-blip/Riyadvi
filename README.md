@@ -181,6 +181,9 @@ All responses: `{ success, message, data?, errors?: [{ field, message }] }`.
 - Three.js/R3F code-split; GSAP loaded dynamically; Motion via `LazyMotion`.
 - Fallback SVGs drawn as a few bucketed paths: home HTML 582 KB → 228 KB.
 - `next/font` (Inter, self-hosted, swap), Server Components by default.
+- **API next to the database:** Vercel functions run in `bom1` (Mumbai), the same region as the Atlas
+  cluster (`vercel.json`). Moving them from `iad1` cut warm admin pages from ~0.5–2 s to ~0.1 s.
+  Dashboard stats use one aggregation per collection (5 queries instead of 15) and tables read with `lean()`.
 
 **Lighthouse (local production build):** Accessibility, Best Practices and SEO 100 on all key pages;
 Performance 96–100 desktop on most pages and 62–81 mobile; the 3D-heavy home page is lower on mobile

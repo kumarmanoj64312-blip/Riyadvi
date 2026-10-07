@@ -58,7 +58,10 @@ export function Timeline({ milestones }: { milestones: Milestone[] }) {
   );
 
   return (
-    <div ref={root} className="relative [perspective:1200px]">
+    // overflow-x: clip — cards start 60px off to the side before swinging in;
+    // clip (unlike hidden) hides that without creating a scroll container,
+    // so ScrollTrigger and sticky positioning keep working.
+    <div ref={root} className="relative overflow-x-clip [perspective:1200px]">
       {/* Track + scrubbed fill (left on mobile, centred on desktop) */}
       <div aria-hidden="true" className="absolute bottom-0 left-4 top-0 w-px bg-line-strong md:left-1/2">
         <div data-line-fill className={cn("h-full w-full origin-top bg-gold", reduce && "scale-y-100")} />

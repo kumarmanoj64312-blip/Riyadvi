@@ -92,6 +92,7 @@ cd backend
 cp .env.example .env            # set MONGODB_URI, CORS_ORIGINS, ADMIN_EMAIL, ADMIN_PASSWORD
 npm install
 npm run seed                    # upserts content + admin account (idempotent); admin only: npm run seed:admin
+npm run seed:demo               # optional: fictional demo leads so the admin dashboard has data
 npm run dev                     # http://localhost:5000/api/health
 
 # 2. Frontend (new terminal)

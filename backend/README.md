@@ -7,6 +7,8 @@ cp .env.example .env          # set MONGODB_URI (local or Atlas) and CORS_ORIGIN
 npm install
 npm run seed                  # upsert content + the admin account (idempotent)
 npm run seed:admin            # admin account only
+npm run seed:demo             # optional: fictional demo leads for the dashboard (@example.com)
+npm run seed:demo -- --clear  # remove the demo leads again
 npm run dev                   # http://localhost:5000  (node --watch)
 ```
 

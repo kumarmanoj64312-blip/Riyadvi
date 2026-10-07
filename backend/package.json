@@ -7,9 +7,10 @@
     "start": "node src/server.js",
     "seed": "node src/seed/seed.js",
     "hash-password": "node src/scripts/hashPassword.js",
-    "seed:admin": "node src/seed/admin.js"
+    "seed:admin": "node src/seed/admin.js",
+    "seed:demo": "node src/seed/demoLeads.js"
   },
-  "description": "Riyadvi Software Technologies \u00e2\u20ac\u201d REST API (Express + MongoDB)",
+  "description": "Riyadvi Software Technologies â€” REST API (Express + MongoDB)",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",

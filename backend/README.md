@@ -5,7 +5,8 @@ Express 5 · MongoDB (Mongoose 9) · Zod 4 · helmet · CORS allow-list · rate 
 ```bash
 cp .env.example .env          # set MONGODB_URI (local or Atlas) and CORS_ORIGINS
 npm install
-npm run seed                  # upsert services & projects (idempotent)
+npm run seed                  # upsert content + the admin account (idempotent)
+npm run seed:admin            # admin account only
 npm run dev                   # http://localhost:5000  (node --watch)
 ```
 
@@ -56,7 +57,10 @@ src/
 
 ## Admin credentials
 
-Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`. Optional, stronger: store a bcrypt hash instead.
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `.env`, then run `npm run seed:admin` (or `npm run seed`):
+the admin account is stored in MongoDB (`admins` collection) with a bcrypt hash only. Login checks the
+database; until an admin is seeded it falls back to the `.env` values. To change the password, edit
+`.env` and re-run `npm run seed:admin`. Optional: supply a ready bcrypt hash instead:
 
 ```bash
 npm run hash-password -- "a long unique password"   # → ADMIN_PASSWORD_HASH (replaces ADMIN_PASSWORD)

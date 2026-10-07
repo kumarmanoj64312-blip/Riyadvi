@@ -1,8 +1,9 @@
 /**
  * Seeds content collections from JSON exported by the frontend
- * (`npm run export:content` in /frontend).
+ * (`npm run export:content` in /frontend) and the admin account from .env.
  *
- *   npm run seed
+ *   npm run seed          (content + admin)
+ *   npm run seed:admin    (admin only)
  *
  * Idempotent: upserts by slug, so it can run on every deploy without
  * duplicating documents. Lead collections are never touched.
@@ -14,6 +15,7 @@ import { Service } from "../models/Service.js";
 import { Project } from "../models/Project.js";
 import { Post } from "../models/Post.js";
 import { Job } from "../models/Career.js";
+import { seedAdmin } from "./seedAdmin.js";
 import { logger } from "../utils/logger.js";
 
 const load = async (name) => JSON.parse(await readFile(new URL(`./data/${name}.json`, import.meta.url), "utf8"));
@@ -32,6 +34,7 @@ try {
   await upsertAll(Project, await load("projects"));
   await upsertAll(Post, await load("posts"));
   await upsertAll(Job, await load("jobs"));
+  await seedAdmin();
   logger.info("Seed complete ✓");
 } catch (err) {
   logger.error("Seed failed", err.message);

@@ -6,7 +6,8 @@
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "seed": "node src/seed/seed.js",
-    "hash-password": "node src/scripts/hashPassword.js"
+    "hash-password": "node src/scripts/hashPassword.js",
+    "seed:admin": "node src/seed/admin.js"
   },
   "description": "Riyadvi Software Technologies \u00e2\u20ac\u201d REST API (Express + MongoDB)",
   "dependencies": {

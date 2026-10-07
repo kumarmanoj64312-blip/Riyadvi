@@ -91,7 +91,7 @@ Requirements: Node.js ≥ 20.9, MongoDB (local or Atlas).
 cd backend
 cp .env.example .env            # set MONGODB_URI, CORS_ORIGINS, ADMIN_EMAIL, ADMIN_PASSWORD
 npm install
-npm run seed                    # upserts services, projects, posts, jobs (idempotent)
+npm run seed                    # upserts content + admin account (idempotent); admin only: npm run seed:admin
 npm run dev                     # http://localhost:5000/api/health
 
 # 2. Frontend (new terminal)
@@ -121,7 +121,7 @@ Content lives in `frontend/src/data/*.ts`. After editing it, run `npm run export
 |---|---|
 | `MONGODB_URI` | MongoDB connection string |
 | `CORS_ORIGINS` | Comma-separated allowed origins; must include the frontend domain |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | The single admin account. Optionally use `ADMIN_PASSWORD_HASH` (bcrypt, `npm run hash-password`) instead of the plain password |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | The admin account, written to MongoDB (bcrypt hash) by `npm run seed` / `seed:admin`; login checks the DB, falling back to these until seeded. Optionally use `ADMIN_PASSWORD_HASH` (bcrypt, `npm run hash-password`) instead of the plain password |
 | `JWT_SECRET`, `JWT_EXPIRES_IN` | Session signing (32+ random chars) and lifetime |
 | `TRUST_PROXY` | Proxy hops in front of the app (2 on Vercel → Render) so rate limits see real IPs |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`, `NOTIFY_TO` | Optional email notifications (disabled when `SMTP_HOST` is empty) |
@@ -132,7 +132,7 @@ Content lives in `frontend/src/data/*.ts`. After editing it, run `npm run export
 
 MongoDB Atlas (free M0) → create a database user → network access `0.0.0.0/0` (Render has no fixed IP on
 the free plan) → copy the `mongodb+srv://…/riyadvi` string into `MONGODB_URI`. Collections and indexes
-are created automatically; `npm run seed` loads the content. Lead collections are never touched by the
+are created automatically; `npm run seed` loads the content and creates the admin account. Lead collections are never touched by the
 seed.
 
 ---

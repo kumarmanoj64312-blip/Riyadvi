@@ -66,6 +66,7 @@ export function HealthCheckup({ services }: { services: ServiceSummary[] }) {
 
   const {
     register,
+    control,
     handleSubmit,
     trigger,
     watch,
@@ -225,6 +226,7 @@ export function HealthCheckup({ services }: { services: ServiceSummary[] }) {
                     key={q.id}
                     question={q}
                     register={register}
+                    control={control}
                     error={answerError(q.id)}
                     value={watch(`answers.${q.id}`)}
                   />

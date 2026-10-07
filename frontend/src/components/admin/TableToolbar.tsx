@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Combobox } from "@/components/ui/Combobox";
 
 /**
  * Search + status filter stored in the URL (?q=&status=) — so filtered views
@@ -41,21 +42,19 @@ export function TableToolbar({ statuses }: { statuses: string[] }) {
           className="h-10 w-full rounded-full border border-line-strong bg-ink px-4 text-sm text-fg placeholder:text-subtle focus:border-gold focus:outline-none"
         />
       </label>
-      <label>
-        <span className="sr-only">Filter by status</span>
-        <select
+      <div className="sm:w-52">
+        <Combobox
+          aria-label="Filter by status"
+          size="sm"
+          searchable
           value={params.get("status") ?? ""}
-          onChange={(e) => update("status", e.target.value)}
-          className="h-10 rounded-full border border-line-strong bg-ink px-4 text-sm capitalize text-fg focus:border-gold focus:outline-none"
-        >
-          <option value="">All statuses</option>
-          {statuses.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      </label>
+          onChange={(v) => update("status", v)}
+          options={[
+            { value: "", label: "All statuses" },
+            ...statuses.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) })),
+          ]}
+        />
+      </div>
     </div>
   );
 }

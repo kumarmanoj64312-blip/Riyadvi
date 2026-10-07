@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { ProjectCard, type ProjectCardData } from "@/components/portfolio/ProjectCard";
 import { cn } from "@/lib/cn";
+import { Combobox } from "@/components/ui/Combobox";
 
 type Option = { value: string; label: string };
 type Props = {
@@ -42,21 +43,17 @@ export function PortfolioExplorer({ projects, industries, services }: Props) {
           onChange={setIndustry}
           options={[{ value: ALL, label: "All" }, ...industries.map((i) => ({ value: i, label: i }))]}
         />
-        <label className="flex flex-col gap-2 text-sm">
+        <div className="flex flex-col gap-2 text-sm lg:w-64">
           <span className="text-subtle">Service</span>
-          <select
+          <Combobox
+            aria-label="Filter by service"
+            size="sm"
+            searchable
             value={service}
-            onChange={(e) => setService(e.target.value)}
-            className="h-10 rounded-full border border-line-strong bg-surface-2 px-4 text-fg"
-          >
-            <option value={ALL}>All services</option>
-            {services.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={setService}
+            options={[{ value: ALL, label: "All services" }, ...services]}
+          />
+        </div>
       </div>
 
       <p aria-live="polite" className="mt-6 text-sm text-subtle">

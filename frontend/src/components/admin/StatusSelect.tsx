@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/cn";
+import { Combobox } from "@/components/ui/Combobox";
 
 const TONE: Record<string, string> = {
   new: "border-gold/60 text-gold",
@@ -43,22 +43,17 @@ export function StatusSelect({ collection, id, status, statuses }: { collection:
   };
 
   return (
-    <select
-      aria-label="Status"
-      value={value}
-      disabled={pending}
-      onChange={(e) => change(e.target.value)}
-      className={cn(
-        "h-8 rounded-full border bg-ink px-3 text-xs capitalize focus:outline-none focus:ring-2 focus:ring-gold/40",
-        TONE[value] ?? "border-line-strong text-fg",
-        error && "border-[#f87171] text-[#fca5a5]",
-      )}
-    >
-      {statuses.map((s) => (
-        <option key={s} value={s}>
-          {s}
-        </option>
-      ))}
-    </select>
+    <div className="w-36">
+      <Combobox
+        aria-label="Status"
+        size="xs"
+        searchable={false}
+        value={value}
+        disabled={pending}
+        onChange={change}
+        colorClass={error ? "border-[#f87171] bg-ink text-[#fca5a5]" : `bg-ink ${TONE[value] ?? "border-line-strong text-fg"}`}
+        options={statuses.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))}
+      />
+    </div>
   );
 }

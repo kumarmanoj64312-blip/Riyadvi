@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, type ContactValues } from "@/schemas/leads";
 import { postJson, warmUpBackend } from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, Textarea } from "@/components/forms/fields";
+import { Field, FormSelect, Honeypot, Input, Textarea } from "@/components/forms/fields";
 import { FormError, FormSuccess } from "@/components/forms/FormStatus";
 
 type Props = {
@@ -29,6 +29,7 @@ export function ContactForm({ requirements, defaultRequirement = "" }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     setError,
     reset,
@@ -78,14 +79,7 @@ export function ContactForm({ requirements, defaultRequirement = "" }: Props) {
       </Field>
       <Field label="What do you need help with?" required error={errors.requirement?.message} className="sm:col-span-2">
         {(a11y) => (
-          <Select {...a11y} {...register("requirement")}>
-            <option value="">Choose one…</option>
-            {requirements.map((r) => (
-              <option key={r.value} value={r.value}>
-                {r.label}
-              </option>
-            ))}
-          </Select>
+          <FormSelect {...a11y} control={control} name="requirement" options={requirements} />
         )}
       </Field>
       <Field label="Tell us about your project" required error={errors.message?.message} className="sm:col-span-2">

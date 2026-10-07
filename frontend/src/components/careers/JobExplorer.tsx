@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import type { Job } from "@/types/content";
 import { experienceLabel } from "@/lib/format";
+import { Combobox } from "@/components/ui/Combobox";
 
 const ALL = "all";
 
@@ -37,40 +38,42 @@ export function JobExplorer({ jobs }: { jobs: Job[] }) {
     );
   }, [jobs, department, designation, experience]);
 
-  const select = "h-11 w-full rounded-full border border-line-strong bg-surface-2 px-4 text-sm text-fg focus:border-gold focus:outline-none";
-
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <label className="flex flex-col gap-2 text-sm text-subtle">
+        <div className="flex flex-col gap-2 text-sm text-subtle">
           Department
-          <select value={department} onChange={(e) => setDepartment(e.target.value)} className={select}>
-            <option value={ALL}>All departments</option>
-            {departments.map((d) => (
-              <option key={d}>{d}</option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-2 text-sm text-subtle">
+          <Combobox
+            aria-label="Filter by department"
+            size="sm"
+            searchable
+            value={department}
+            onChange={setDepartment}
+            options={[{ value: ALL, label: "All departments" }, ...departments.map((d) => ({ value: d, label: d }))]}
+          />
+        </div>
+        <div className="flex flex-col gap-2 text-sm text-subtle">
           Designation
-          <select value={designation} onChange={(e) => setDesignation(e.target.value)} className={select}>
-            <option value={ALL}>All designations</option>
-            {designations.map((d) => (
-              <option key={d}>{d}</option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-2 text-sm text-subtle">
+          <Combobox
+            aria-label="Filter by designation"
+            size="sm"
+            searchable
+            value={designation}
+            onChange={setDesignation}
+            options={[{ value: ALL, label: "All designations" }, ...designations.map((d) => ({ value: d, label: d }))]}
+          />
+        </div>
+        <div className="flex flex-col gap-2 text-sm text-subtle">
           Experience
-          <select value={experience} onChange={(e) => setExperience(e.target.value)} className={select}>
-            <option value={ALL}>Any experience</option>
-            {BANDS.map((b) => (
-              <option key={b.value} value={b.value}>
-                {b.label}
-              </option>
-            ))}
-          </select>
-        </label>
+          <Combobox
+            aria-label="Filter by experience"
+            size="sm"
+            searchable
+            value={experience}
+            onChange={setExperience}
+            options={[{ value: ALL, label: "Any experience" }, ...BANDS.map((b) => ({ value: b.value, label: b.label }))]}
+          />
+        </div>
       </div>
 
       <p aria-live="polite" className="mt-6 text-sm text-subtle">

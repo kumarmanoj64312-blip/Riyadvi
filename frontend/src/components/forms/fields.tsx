@@ -2,6 +2,8 @@
 
 import { useId, type ComponentProps, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { useController, type Control, type FieldValues, type Path } from "react-hook-form";
+import { Combobox, type ComboOption } from "@/components/ui/Combobox";
 
 /*
  * Accessible form primitives.
@@ -68,14 +70,41 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   );
 }
 
-export function Select({ className, children, ...props }: ComponentProps<"select">) {
+/**
+ * Dropdown field for react-hook-form: the custom searchable Combobox wired up
+ * with useController (value, change, blur/touched, and focus on error).
+ * Replaces the browser's native <select>.
+ */
+export function FormSelect<T extends FieldValues>({
+  control,
+  name,
+  options,
+  placeholder = "Choose one…",
+  searchable,
+  ...a11y
+}: {
+  control: Control<T>;
+  name: Path<T>;
+  options: ComboOption[];
+  placeholder?: string;
+  searchable?: boolean;
+  id?: string;
+  "aria-invalid"?: boolean;
+  "aria-describedby"?: string;
+}) {
+  const { field } = useController({ control, name });
   return (
-    <select
-      {...props}
-      className={cn(control, "h-12 aria-[invalid=true]:border-[#f87171]", "border-line-strong", className)}
-    >
-      {children}
-    </select>
+    <Combobox
+      {...a11y}
+      name={field.name}
+      value={(field.value as string | undefined) ?? ""}
+      onChange={field.onChange}
+      onBlur={field.onBlur}
+      buttonRef={field.ref}
+      options={options}
+      placeholder={placeholder}
+      searchable={searchable}
+    />
   );
 }
 

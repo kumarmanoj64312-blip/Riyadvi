@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CONSULTATION_SLOTS, consultationSchema, type ConsultationValues } from "@/schemas/leads";
 import { postJson } from "@/lib/apiClient";
 import { Button } from "@/components/ui/Button";
-import { Field, Honeypot, Input, Select, Textarea } from "@/components/forms/fields";
+import { Field, FormSelect, Honeypot, Input, Textarea } from "@/components/forms/fields";
 import { FormError, FormSuccess } from "@/components/forms/FormStatus";
 
 type Props = { requirements: { value: string; label: string }[] };
@@ -26,6 +26,7 @@ export function ConsultationForm({ requirements }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     setError,
     reset,
@@ -64,14 +65,7 @@ export function ConsultationForm({ requirements }: Props) {
       </Field>
       <Field label="Topic" required error={errors.requirement?.message}>
         {(a11y) => (
-          <Select {...a11y} {...register("requirement")} defaultValue="">
-            <option value="">Choose one…</option>
-            {requirements.map((r) => (
-              <option key={r.value} value={r.value}>
-                {r.label}
-              </option>
-            ))}
-          </Select>
+          <FormSelect {...a11y} control={control} name="requirement" options={requirements} />
         )}
       </Field>
       <Field label="Preferred date" required error={errors.preferredDate?.message}>
@@ -80,14 +74,13 @@ export function ConsultationForm({ requirements }: Props) {
       </Field>
       <Field label="Preferred time (IST)" required error={errors.preferredTime?.message}>
         {(a11y) => (
-          <Select {...a11y} {...register("preferredTime")} defaultValue="">
-            <option value="">Choose a slot…</option>
-            {CONSULTATION_SLOTS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </Select>
+          <FormSelect
+            {...a11y}
+            control={control}
+            name="preferredTime"
+            placeholder="Choose a slot…"
+            options={CONSULTATION_SLOTS.map((s) => ({ value: s, label: s }))}
+          />
         )}
       </Field>
       <Field label="Anything we should prepare?" error={errors.notes?.message} className="sm:col-span-2">

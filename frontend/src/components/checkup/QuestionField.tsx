@@ -1,15 +1,16 @@
 "use client";
 
 import { useId } from "react";
-import type { UseFormRegister } from "react-hook-form";
+import type { Control, UseFormRegister } from "react-hook-form";
 import type { CheckupQuestion } from "@/data/healthCheckup";
 import type { CheckupFormValues } from "@/lib/checkup";
-import { Select, Textarea } from "@/components/forms/fields";
+import { FormSelect, Textarea } from "@/components/forms/fields";
 import { cn } from "@/lib/cn";
 
 type Props = {
   question: CheckupQuestion;
   register: UseFormRegister<CheckupFormValues>;
+  control: Control<CheckupFormValues>;
   error?: string;
   /** Current value — used to cap multi-select at `max`. */
   value: unknown;
@@ -20,7 +21,7 @@ type Props = {
  * inputs (keyboard + screen-reader friendly), visually styled as cards via
  * the `peer` pattern. Grouped in a <fieldset> with <legend> for context.
  */
-export function QuestionField({ question: q, register, error, value }: Props) {
+export function QuestionField({ question: q, register, control, error, value }: Props) {
   const id = useId();
   const name = `answers.${q.id}` as const;
   const errorId = `${id}-error`;
@@ -50,14 +51,14 @@ export function QuestionField({ question: q, register, error, value }: Props) {
           {q.label}
           {q.required && <span className="text-gold"> *</span>}
         </label>
-        <Select id={id} aria-invalid={Boolean(error)} aria-describedby={describedBy} defaultValue="" {...register(name)}>
-          <option value="">Choose one…</option>
-          {q.options?.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </Select>
+        <FormSelect
+          id={id}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
+          control={control}
+          name={name}
+          options={q.options ?? []}
+        />
         {err}
       </div>
     );

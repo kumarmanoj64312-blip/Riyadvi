@@ -1,5 +1,6 @@
 "use client";
 
+import "@/three/utils/threeConsole"; // must run before R3F creates its clock
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { View } from "@react-three/drei";

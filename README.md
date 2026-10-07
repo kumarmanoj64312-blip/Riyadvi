@@ -231,7 +231,7 @@ that only touched.
   throttled mid-range phone (bundle parse + shader compile). Weak devices are protected by tiering and
   the FrameGuard, but capable phones still pay it.
 - **Lead magnet is soft-gated:** the PDF is a static file, reachable by direct URL.
-- **Single admin account** from environment variables; no roles or password reset.
+- **Single admin account**, seeded into MongoDB from `.env`; no roles, user management UI or password-reset flow.
 - **Email** depends on the SMTP provider; some free hosts block SMTP ports (an HTTP email API is a drop-in
   replacement in `notification.service.js`).
 - Render free tier cold starts; device tilt is not enabled on iOS (requires a permission prompt).

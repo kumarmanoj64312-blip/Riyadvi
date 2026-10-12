@@ -14,12 +14,12 @@ export const services: Service[] = [
     title: "Web Development",
     tagline: "Fast, scalable websites and web apps",
     summary:
-      "High-performance websites, portals and web applications built on modern frameworks — engineered to load fast, rank well and convert.",
+      "High-performance websites, portals and web applications built on modern frameworks, engineered to load fast, rank well and convert.",
     sceneType: "web-development",
     hero: {
       headline: "Websites and web apps engineered for growth",
       intro:
-        "From corporate websites to complex web platforms, we build fast, secure and scalable products on Next.js, React and Node.js — designed around the outcomes your business needs.",
+        "From corporate websites to complex web platforms, we build fast, secure and scalable products on Next.js, React and Node.js, designed around the outcomes your business needs.",
     },
     problem: {
       title: "Is your website holding your business back?",
@@ -63,12 +63,12 @@ export const services: Service[] = [
     title: "App Development",
     tagline: "Native-quality mobile apps for iOS & Android",
     summary:
-      "Cross-platform and native mobile apps that customers love to use — from MVP to scale, with secure backends and smooth releases.",
+      "Cross-platform and native mobile apps that customers love to use, from MVP to scale, with secure backends and smooth releases.",
     sceneType: "app-development",
     hero: {
       headline: "Mobile apps your customers keep coming back to",
       intro:
-        "We design and build iOS and Android apps with intuitive UX, reliable performance and secure cloud backends — taking you from idea to App Store and beyond.",
+        "We design and build iOS and Android apps with intuitive UX, reliable performance and secure cloud backends, taking you from idea to App Store and beyond.",
     },
     problem: {
       title: "Great app ideas often stall in execution",
@@ -112,12 +112,12 @@ export const services: Service[] = [
     title: "Digital Marketing",
     tagline: "Data-driven growth across search & social",
     summary:
-      "SEO, performance marketing and social campaigns measured against real business numbers — leads, sales and customer lifetime value.",
+      "SEO, performance marketing and social campaigns measured against real business numbers: leads, sales and customer lifetime value.",
     sceneType: "digital-marketing",
     hero: {
       headline: "Marketing measured in growth, not vanity metrics",
       intro:
-        "We plan, run and optimise campaigns across search, social and content — with transparent reporting tied to the numbers that matter to your business.",
+        "We plan, run and optimise campaigns across search, social and content, with transparent reporting tied to the numbers that matter to your business.",
     },
     problem: {
       title: "Spending on marketing but unsure what's working?",
@@ -161,12 +161,12 @@ export const services: Service[] = [
     title: "AR / VR",
     tagline: "Immersive experiences that sell and train",
     summary:
-      "Augmented and virtual reality experiences — virtual tours, product try-ons and training simulations that make complex things tangible.",
+      "Augmented and virtual reality experiences: virtual tours, product try-ons and training simulations that make complex things tangible.",
     sceneType: "ar-vr",
     hero: {
       headline: "Step inside the experience",
       intro:
-        "We create web-based and headset AR/VR experiences that let customers explore properties, try products and learn by doing — no imagination required.",
+        "We create web-based and headset AR/VR experiences that let customers explore properties, try products and learn by doing, no imagination required.",
     },
     problem: {
       title: "Some things are hard to sell with photos",
@@ -180,11 +180,11 @@ export const services: Service[] = [
     solution: {
       title: "Immersive, accessible, measurable",
       description:
-        "We build experiences that run in the browser or on headsets — optimised 3D, intuitive interactions and analytics on how people engage.",
+        "We build experiences that run in the browser or on headsets, optimised 3D, intuitive interactions and analytics on how people engage.",
     },
     features: [
       { title: "Virtual tours", description: "Walk-throughs of properties, showrooms and facilities." },
-      { title: "WebAR", description: "Place products in your room straight from the browser — no app needed." },
+      { title: "WebAR", description: "Place products in your room straight from the browser, no app needed." },
       { title: "VR training", description: "Safe, repeatable simulations for complex procedures." },
       { title: "3D configurators", description: "Customise colours, materials and options in real time." },
       { title: "Cross-device", description: "Works on phones, desktops and Meta Quest." },
@@ -229,7 +229,7 @@ export const services: Service[] = [
     solution: {
       title: "One model, every channel",
       description:
-        "A single accurate model becomes renders, animations, web viewers and AR — optimised for each use so it looks great and loads fast.",
+        "A single accurate model becomes renders, animations, web viewers and AR, optimised for each use so it looks great and loads fast.",
     },
     features: [
       { title: "Product modelling", description: "Accurate, production-ready models from drawings or references." },
@@ -259,15 +259,15 @@ export const services: Service[] = [
     title: "UI/UX Design",
     tagline: "Research-led design that converts",
     summary:
-      "User research, UX strategy and polished interface design — design systems that make products intuitive, consistent and on-brand.",
+      "User research, UX strategy and polished interface design, design systems that make products intuitive, consistent and on-brand.",
     sceneType: "ui-ux-design",
     hero: {
       headline: "Design that makes complex things feel simple",
       intro:
-        "We research how your users think, then design interfaces and design systems that make every journey intuitive — validated with real people before development.",
+        "We research how your users think, then design interfaces and design systems that make every journey intuitive, validated with real people before development.",
     },
     problem: {
-      title: "Users don't read manuals — they leave",
+      title: "Users don't read manuals. They leave",
       points: [
         "Confusing navigation and dead-end journeys",
         "Inconsistent screens that feel stitched together",
@@ -278,7 +278,7 @@ export const services: Service[] = [
     solution: {
       title: "Evidence over opinion",
       description:
-        "Research, wireframes, prototypes and testing — then a scalable design system your developers can build from directly.",
+        "Research, wireframes, prototypes and testing, then a scalable design system your developers can build from directly.",
     },
     features: [
       { title: "User research", description: "Interviews, analytics and competitor reviews." },

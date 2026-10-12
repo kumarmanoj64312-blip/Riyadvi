@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site";
 
 /** Default social share image (1200×630), generated at build time — no design file needed. */
-export const alt = `${siteConfig.name} — Custom Software & Digital Solutions`;
+export const alt = `${siteConfig.name} - Custom Software & Digital Solutions`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -33,7 +33,7 @@ export default function OpengraphImage() {
               Custom Software & Digital Solutions to Grow Your Business
             </div>
           </div>
-          <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa" }}>{`Web · Apps · UI/UX · AR/VR · 3D · Marketing — since ${siteConfig.founded}`}</div>
+          <div style={{ display: "flex", fontSize: 22, color: "#a1a1aa" }}>{`Web · Apps · UI/UX · AR/VR · 3D · Marketing, since ${siteConfig.founded}`}</div>
         </div>
       </div>
     ),

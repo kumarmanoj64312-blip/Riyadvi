@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { SplitText } from "@/components/ui/SplitText";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ScreenMock } from "@/components/portfolio/ScreenMock";
@@ -36,7 +37,9 @@ export function CaseStudyTemplate({ project, services, next }: Props) {
             <span className="text-muted">{project.client}</span>
           </nav>
           <p className="mt-6 text-sm font-medium uppercase tracking-[0.25em] text-gold">{project.client}</p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">{project.title}</h1>
+          <h1 className="text-display-xl mt-3 max-w-4xl font-semibold text-balance">
+            <SplitText text={project.title} trigger="load" />
+          </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{project.summary}</p>
 
           <dl className="mt-10 grid grid-cols-2 gap-6 border-t border-line pt-8 md:grid-cols-4">
@@ -199,7 +202,7 @@ export function CaseStudyTemplate({ project, services, next }: Props) {
             <div>
               <p className="text-sm text-subtle">Next case study</p>
               <Link href={`/portfolio/${next.slug}`} className="mt-1 block text-2xl font-semibold tracking-tight hover:text-gold">
-                {next.client} — {next.title} →
+                {next.client}: {next.title} →
               </Link>
             </div>
             <Button href="/contact#consultation">Start a similar project</Button>

@@ -8,12 +8,12 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Careers",
-  description: "Join Riyadvi Software Technologies — open roles in engineering, design and marketing.",
+  description: "Join Riyadvi Software Technologies: open roles in engineering, design and marketing.",
 };
 
 const PERKS = [
-  { title: "Real ownership", text: "Small teams, real clients — your work ships and you see its impact." },
-  { title: "Modern stack", text: "Next.js, React Three Fiber, Node.js, Figma — and time to learn what's next." },
+  { title: "Real ownership", text: "Small teams and real clients. Your work ships and you see its impact." },
+  { title: "Modern stack", text: "Next.js, React Three Fiber, Node.js, Figma, and time to learn what's next." },
   { title: "Mentorship", text: "Weekly reviews and pairing with senior engineers and designers." },
   { title: "Flexibility", text: "Hybrid working and outcome-based schedules." },
 ];

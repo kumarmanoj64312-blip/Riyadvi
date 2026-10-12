@@ -232,7 +232,7 @@ export const checkupSteps: CheckupStep[] = [
         options: [
           { value: "mostly-manual", label: "Most of it", score: 1, recommends: "app-development" },
           { value: "some", label: "Some of it", score: 6 },
-          { value: "automated", label: "Very little — it's automated", score: 10 },
+          { value: "automated", label: "Very little, it's automated", score: 10 },
         ],
       },
       {
@@ -244,7 +244,7 @@ export const checkupSteps: CheckupStep[] = [
         options: [
           { value: "yes", label: "Yes, they're integrated", score: 10 },
           { value: "some", label: "Some of them", score: 5 },
-          { value: "no", label: "No — lots of copy-paste", score: 0, recommends: "web-development" },
+          { value: "no", label: "No, lots of copy-paste", score: 0, recommends: "web-development" },
         ],
       },
       {

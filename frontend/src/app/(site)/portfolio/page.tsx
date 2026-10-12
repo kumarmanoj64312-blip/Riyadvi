@@ -7,7 +7,7 @@ import { getProjects, getServices } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Portfolio",
   description:
-    "Case studies from Riyadvi Software Technologies — websites, apps, AR/VR and marketing for healthcare, real estate, retail, beauty and life-science brands.",
+    "Case studies from Riyadvi Software Technologies: websites, apps, AR/VR and marketing for healthcare, real estate, retail, beauty and life-science brands.",
 };
 
 /** /portfolio — server-renders all projects, then filters client-side. */
@@ -26,7 +26,7 @@ export default async function PortfolioPage() {
             as="h1"
             eyebrow="Portfolio"
             title="Work that moved the numbers"
-            description="Selected projects across healthcare, real estate, retail, beauty and life sciences — each with the challenge, our approach and the results."
+            description="Selected projects across healthcare, real estate, retail, beauty and life sciences, each with the challenge, our approach and the results."
           />
         </div>
       </section>

@@ -35,23 +35,42 @@
   --color-line-strong: rgb(255 255 255 / 0.16);
   --color-glass: rgb(255 255 255 / 0.04);
 
+  /* Radii: ONE system. Controls (buttons, inputs, chips) are pills; containers are 1.5rem; inner panels 1rem. */
+  --radius-panel: 1rem;
+  --radius-card: 1.5rem;
+
+  /* Shadows: tinted to the black/gold palette, never generic grey drop shadows */
+  --shadow-deep: 0 40px 80px -40px rgb(0 0 0 / 0.9);
+  --shadow-gold-soft: 0 0 60px -30px var(--color-gold);
+  --shadow-inner-edge: inset 0 1px 0 rgb(255 255 255 / 0.06);
+
+  /* Fluid display type scale (→ text-display-xl / -lg / -md) */
+  /* Tuned for Syne, which is wide: a touch smaller, with tighter tracking. */
+  --text-display-xl: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-lg: clamp(1.85rem, 1.3rem + 2.1vw, 3.1rem);
+  --text-display-lg--line-height: 1.08;
+  --text-display-lg--letter-spacing: -0.035em;
+  --text-display-md: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.02em;
+
+  /* Section rhythm (→ py-section / pt-section…): bottom gets a touch more, optically */
+  --spacing-section: clamp(5rem, 3.5rem + 6vw, 9rem);
+
   /* Motion: one signature easing used by CSS, GSAP and Motion */
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Layout */
   --container-site: 100%;
 
-  /* Animations (→ animate-scroll-cue) */
-  --animate-scroll-cue: scroll-cue 2.2s var(--ease-premium) infinite;
-  @keyframes scroll-cue {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(200%); }
-  }
 }
 
 /* Font variable is injected by next/font on <html>, so it must be "inline". */
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
@@ -67,6 +86,14 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Headings use the display face everywhere (one rule instead of a class on 60+ headings). */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 
   ::selection {
@@ -110,6 +137,166 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+
+/*
+ * <Preloader> timeline (pure CSS, ~1.1 s): mark strokes in 0-0.6s, wordmark
+ * fades in, panel lifts away at 0.75s with a gold leading edge, then ignores
+ * the pointer. Hidden entirely when <html data-intro-seen> (set by its inline
+ * script on later pages of the session / reduced motion).
+ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-ink);
+  animation: preloader-out 0.7s var(--ease-premium) 0.75s forwards;
+}
+.preloader-edge {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold-light), var(--color-gold-dark));
+  box-shadow: 0 0 24px 4px var(--color-gold);
+}
+.preloader-mark path {
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: preloader-draw 0.6s var(--ease-premium) forwards;
+}
+.preloader-mark circle {
+  fill: var(--color-gold);
+  opacity: 0;
+  animation: preloader-fade 0.3s ease-out 0.35s forwards;
+}
+.preloader-word {
+  opacity: 0;
+  animation: preloader-fade 0.4s ease-out 0.25s forwards;
+}
+html[data-intro-seen] .preloader {
+  display: none;
+}
+/* First visit: start the hero headline reveal as the panel lifts, not behind it. */
+html:not([data-intro-seen]) [data-split="load"] {
+  --split-delay: 900ms !important;
+}
+@keyframes preloader-out {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+@keyframes preloader-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes preloader-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+ * <SplitText> masked word reveal. Each .split-word is a clip mask; its
+ * .split-inner slides up from 105% (fully hidden) to 0. The small padding /
+ * negative margin keeps descenders (g, y, p) from being clipped.
+ * Stagger = 60ms per word (--i) + optional start delay (--split-delay).
+ */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.split-inner {
+  display: inline-block;
+  transform: translateY(105%);
+  animation: split-rise 0.9s var(--ease-premium) forwards;
+  animation-delay: calc(var(--i, 0) * 60ms + var(--split-delay, 0ms));
+}
+/* "view" trigger: hold the animation until IntersectionObserver marks it in view. */
+[data-split="view"]:not([data-inview]) .split-inner {
+  animation-play-state: paused;
+}
+@keyframes split-rise {
+  to { transform: translateY(0); }
+}
+/* Reduced motion (and the <noscript> rule in the root layout): just show the text. */
+@media (prefers-reduced-motion: reduce) {
+  .split-inner {
+    transform: none;
+    animation: none;
+  }
+}
+
+/*
+ * Tilt cards (data-tilt): <PointerFX> sets the custom properties on hover and
+ * removes them on leave, so the card eases back to flat.
+ */
+.tilt-card {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition:
+    transform 0.4s var(--ease-premium),
+    border-color 0.5s var(--ease-premium);
+}
+.tilt-glare {
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgb(245 226 122 / 0.14),
+    transparent 55%
+  );
+}
+
+/*
+ * Cursor-following stage light (data-spotlight sections). The light layer is
+ * a pseudo-element: only its opacity animates, and its gradient position
+ * comes from the --spot-x/--spot-y custom properties set by PointerFX.
+ */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-premium);
+  background: radial-gradient(
+    600px circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    rgb(212 175 55 / 0.1),
+    transparent 60%
+  );
+}
+.spotlight[data-lit]::before {
+  opacity: 1;
+}
+
+/* Numbers that change or sit in columns (stats, counters, dates) don't jitter. */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Film grain: a fixed, pointer-events-none layer between the 3D canvas (z-0)
+ * and the content (z-10), so it textures backgrounds and 3D but never sits on
+ * top of text. Static SVG noise → one composited layer, no repaint on scroll.
+ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Frosted glass panel used for navbar, cards and modals. */

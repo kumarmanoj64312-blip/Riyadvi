@@ -14,7 +14,7 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 /** Plain-language verdict for the overall score. */
 function verdict(score: number) {
-  if (score >= 75) return { title: "Ready to scale", text: "Strong digital foundations — the next gains come from optimisation and new channels." };
+  if (score >= 75) return { title: "Ready to scale", text: "Strong digital foundations. The next gains come from optimisation and new channels." };
   if (score >= 50) return { title: "Growing, with gaps", text: "Good foundations, but a few weak spots are quietly costing you leads and time." };
   return { title: "Big opportunity ahead", text: "Fixing the fundamentals below will likely give you the fastest growth of any investment." };
 }
@@ -127,7 +127,7 @@ export function CheckupResults({ result, services, onRestart }: { result: Checku
           Retake the checkup
         </button>
       </div>
-      <p className="mt-6 text-xs text-subtle">A copy of your results has been sent to our team — we&apos;ll be in touch within one business day.</p>
+      <p className="mt-6 text-xs text-subtle">A copy of your results has been sent to our team, and we&apos;ll be in touch within one business day.</p>
     </section>
   );
 }

@@ -17,9 +17,9 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
   return (
     <section className="container-site flex min-h-[70dvh] flex-col items-start justify-center pt-28">
       <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold">Something went wrong</p>
-      <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">This page hit a snag.</h1>
+      <h1 className="text-display-xl mt-4 font-semibold">This page hit a snag.</h1>
       <p className="mt-4 max-w-lg text-muted">
-        Please try again. If it keeps happening, reach us directly — we&apos;ll respond within one business day.
+        Please try again. If it keeps happening, reach us directly and we&apos;ll respond within one business day.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button type="button" onClick={reset}>

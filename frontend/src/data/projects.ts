@@ -41,6 +41,7 @@ export const projects: Project[] = [
       { label: "Compare systems", kind: "desktop" },
       { label: "Book installation", kind: "mobile" },
     ],
+    showcase: { device: "laptop" },
   },
   {
     slug: "wanaromah",
@@ -51,7 +52,7 @@ export const projects: Project[] = [
     services: ["web-development", "ui-ux-design"],
     summary: "A premium D2C storefront that translates the in-store fragrance experience to the web.",
     challenge:
-      "Fragrance is hard to sell online — customers can't smell it. The brand needed a store that communicates scent and craftsmanship and still checks out fast.",
+      "Fragrance is hard to sell online: customers can't smell it. The brand needed a store that communicates scent and craftsmanship and still checks out fast.",
     solution:
       "We designed scent-family navigation, rich notes pyramids and gift bundles, on a fast headless storefront with a streamlined checkout.",
     deliverables: ["Brand-led UI design", "Scent finder", "Headless storefront", "Gift bundles & checkout"],
@@ -122,6 +123,7 @@ export const projects: Project[] = [
       { label: "Services menu", kind: "desktop" },
       { label: "Book a stylist", kind: "mobile" },
     ],
+    showcase: { device: "laptop" },
   },
   {
     slug: "studio11",
@@ -147,6 +149,7 @@ export const projects: Project[] = [
       { label: "Book a slot", kind: "mobile" },
       { label: "Rewards", kind: "mobile" },
     ],
+    showcase: { device: "phone" },
   },
   {
     slug: "sivam-physio-care",
@@ -159,7 +162,7 @@ export const projects: Project[] = [
     challenge:
       "Patients searched for symptoms, not treatment names, and the old site offered no way to book outside opening hours.",
     solution:
-      "Symptom-led content architecture, treatment explainers, practitioner profiles and 24/7 appointment requests — plus local SEO.",
+      "Symptom-led content architecture, treatment explainers, practitioner profiles and 24/7 appointment requests, plus local SEO.",
     deliverables: ["Accessible clinic site", "Symptom guides", "Appointment requests", "Local SEO"],
     technologies: ["Next.js", "Tailwind CSS", "Node.js", "Google Business Profile"],
     results: [
@@ -172,6 +175,7 @@ export const projects: Project[] = [
       { label: "Treatments", kind: "desktop" },
       { label: "Book appointment", kind: "mobile" },
     ],
+    showcase: { device: "laptop" },
   },
   {
     slug: "pearl-housing",
@@ -224,6 +228,7 @@ export const projects: Project[] = [
       { label: "Lab services", kind: "desktop" },
       { label: "Publications", kind: "desktop" },
     ],
+    showcase: { device: "laptop" },
   },
   {
     slug: "visdoc",
@@ -276,5 +281,6 @@ export const projects: Project[] = [
       { label: "Treatments in 3D", kind: "desktop" },
       { label: "Book a visit", kind: "mobile" },
     ],
+    showcase: { device: "laptop" },
   },
 ];

@@ -1,13 +1,13 @@
 import type { Technology } from "@/types/content";
 
-/** Technology ecosystem — drives the 3D constellation and its accessible list. */
+/** Technology ecosystem: drives the 3D technology globe and its accessible list. */
 export const technologies: Technology[] = [
   // Ring 0 — the experience layer
   { slug: "react", name: "React", category: "Frontend", ring: 0, color: "#61dafb", usage: "Component-driven interfaces for every web product we build." },
-  { slug: "nextjs", name: "Next.js", category: "Frontend", ring: 0, color: "#ffffff", usage: "Fast, SEO-friendly websites and web apps — including this one." },
+  { slug: "nextjs", name: "Next.js", category: "Frontend", ring: 0, color: "#ffffff", usage: "Fast, SEO-friendly websites and web apps, including this one." },
   { slug: "javascript", name: "JavaScript", category: "Frontend", ring: 0, color: "#f7df1e", usage: "The language of the web, end to end." },
   { slug: "typescript", name: "TypeScript", category: "Frontend", ring: 0, color: "#3178c6", usage: "Type-safe code that scales with larger teams." },
-  { slug: "threejs", name: "Three.js", category: "3D & Immersive", ring: 0, color: "#d4af37", usage: "Real-time 3D in the browser — product viewers and immersive sites." },
+  { slug: "threejs", name: "Three.js", category: "3D & Immersive", ring: 0, color: "#d4af37", usage: "Real-time 3D in the browser: product viewers and immersive sites." },
   { slug: "r3f", name: "React Three Fiber", category: "3D & Immersive", ring: 0, color: "#f5e27a", usage: "3D scenes as React components (this site's hero, story and services)." },
   // Ring 1 — the engine
   { slug: "nodejs", name: "Node.js", category: "Backend", ring: 1, color: "#5fa04e", usage: "APIs, integrations and real-time services." },

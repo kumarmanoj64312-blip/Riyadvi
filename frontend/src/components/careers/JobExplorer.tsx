@@ -108,7 +108,7 @@ export function JobExplorer({ jobs }: { jobs: Job[] }) {
 
       {results.length === 0 && (
         <p className="mt-4 rounded-2xl border border-line p-8 text-center text-muted">
-          No roles match right now — send us a general application at the bottom of this page.
+          No roles match right now. Send us a general application at the bottom of this page.
         </p>
       )}
     </div>

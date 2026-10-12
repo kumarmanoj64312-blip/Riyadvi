@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps<"/portfolio/[slug]"
   return {
     title: `${project.client} case study`,
     description: project.summary,
-    openGraph: { title: `${project.client} — ${project.title}`, description: project.summary },
+    openGraph: { title: `${project.client} - ${project.title}`, description: project.summary },
   };
 }
 

@@ -7,7 +7,7 @@ type Size = "sm" | "md" | "lg";
 
 const base =
   "group relative inline-flex items-center justify-center gap-2 rounded-full font-medium " +
-  "transition-[transform,background-color,border-color,box-shadow,color] duration-300 ease-premium " +
+  "transition-[translate,transform,background-color,border-color,box-shadow,color] duration-300 ease-premium " +
   "active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
@@ -44,9 +44,11 @@ type ButtonAsButton = StyleProps & ComponentProps<"button"> & { href?: undefined
 export function Button(props: ButtonAsLink | ButtonAsButton) {
   const { variant, size, className, ...rest } = props;
   const classes = buttonClasses({ variant, size, className });
+  // Primary/secondary buttons lean toward the cursor (handled globally by <PointerFX>).
+  const magnetic = variant !== "ghost" ? { "data-magnetic": "" } : {};
 
   if (rest.href !== undefined) {
-    return <Link {...(rest as ComponentProps<typeof Link>)} className={classes} />;
+    return <Link {...(rest as ComponentProps<typeof Link>)} {...magnetic} className={classes} />;
   }
-  return <button {...(rest as ComponentProps<"button">)} className={classes} />;
+  return <button {...(rest as ComponentProps<"button">)} {...magnetic} className={classes} />;
 }

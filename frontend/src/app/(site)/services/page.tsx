@@ -8,14 +8,14 @@ import { getServices } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Web development, app development, digital marketing, AR/VR, 3D modeling and UI/UX design — end-to-end digital services from Riyadvi Software Technologies.",
+    "Web development, app development, digital marketing, AR/VR, 3D modeling and UI/UX design. End-to-end digital services from Riyadvi Software Technologies.",
 };
 
 const PRINCIPLES = [
   { title: "Business first", description: "Every project starts from your goals and the metrics that prove success." },
   { title: "One accountable team", description: "Strategy, design, engineering and marketing under one roof." },
   { title: "Built to scale", description: "Modern, documented architecture that grows with you." },
-  { title: "Partners after launch", description: "Support, optimisation and a roadmap — not a hand-off." },
+  { title: "Partners after launch", description: "Support, optimisation and a roadmap, not a hand-off." },
 ];
 
 /** /services — overview of all services, rendered from the data layer. */
@@ -29,7 +29,7 @@ export default async function ServicesPage() {
           <SectionHeading
             as="h1"
             eyebrow="Services"
-            title="Technology, design and growth — under one roof"
+            title="Technology, design and growth under one roof"
             description="We don't just deliver projects. We partner with you from the first business question to measurable growth, across six core capabilities."
           />
         </div>
@@ -47,7 +47,7 @@ export default async function ServicesPage() {
 
       <section aria-labelledby="principles-heading" className="border-t border-line py-24">
         <div className="container-site">
-          <SectionHeading eyebrow="How we work" title={<span id="principles-heading">What every engagement includes</span>} />
+          <SectionHeading eyebrow="How we work" titleId="principles-heading" title="What every engagement includes" />
           <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {PRINCIPLES.map((p, i) => (
               <Reveal as="li" key={p.title} delay={i * 0.06} className="rounded-2xl border border-line bg-surface-2 p-6">

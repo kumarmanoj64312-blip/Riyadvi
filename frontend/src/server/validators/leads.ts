@@ -57,6 +57,12 @@ export const leadMagnetSchema = z.object({
   sourcePage: fields.sourcePage,
 });
 
+/** POST /api/newsletter */
+export const newsletterSchema = z.object({
+  email: fields.email,
+  sourcePage: fields.sourcePage,
+});
+
 /** POST /api/applications (multipart: these text fields + a `resume` file). */
 export const applicationSchema = z.object({
   jobSlug: z.string().trim().min(1, "Please choose a position.").max(80),
@@ -70,4 +76,5 @@ export type ContactInput = z.output<typeof contactSchema>;
 export type ConsultationInput = z.output<typeof consultationSchema>;
 export type HealthCheckupInput = z.output<typeof healthCheckupSchema>;
 export type LeadMagnetInput = z.output<typeof leadMagnetSchema>;
+export type NewsletterInput = z.output<typeof newsletterSchema>;
 export type ApplicationInput = z.output<typeof applicationSchema>;

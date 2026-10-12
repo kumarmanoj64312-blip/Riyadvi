@@ -12,6 +12,7 @@ const CARDS = [
   { key: "health-checkups", label: "Health checkup leads", href: "/admin/health-checkups" },
   { key: "lead-magnet", label: "Lead magnet leads", href: "/admin/leads" },
   { key: "applications", label: "Job applications", href: "/admin/applications" },
+  { key: "newsletter", label: "Newsletter subscribers", href: "/admin/newsletter" },
 ] as const;
 
 /** /admin — totals per lead type + the latest enquiries to act on. */
@@ -28,7 +29,7 @@ export default async function AdminDashboard() {
         <p className="mt-1 text-sm text-muted">Every lead captured by the website, in one place.</p>
       </header>
 
-      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {CARDS.map((c) => {
           const s = stats[c.key];
           return (

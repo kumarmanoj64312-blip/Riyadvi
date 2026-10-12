@@ -3,6 +3,7 @@ import { ContactEnquiry } from "../models/ContactEnquiry";
 import { ConsultationRequest } from "../models/ConsultationRequest";
 import { HealthCheckupLead } from "../models/HealthCheckupLead";
 import { LeadMagnetLead } from "../models/LeadMagnetLead";
+import { NEWSLETTER_STATUSES, NewsletterSubscriber } from "../models/NewsletterSubscriber";
 import { APPLICATION_STATUSES, CareerApplication } from "../models/Career";
 import { LEAD_STATUSES } from "../models/_shared";
 import { ApiError } from "../utils/errors";
@@ -21,6 +22,7 @@ export const COLLECTIONS: Record<string, CollectionDef> = {
   "health-checkups": { Model: HealthCheckupLead, statuses: LEAD_STATUSES, search: ["name", "email", "company"] },
   "lead-magnet": { Model: LeadMagnetLead, statuses: LEAD_STATUSES, search: ["name", "email", "company"] },
   applications: { Model: CareerApplication, statuses: APPLICATION_STATUSES, search: ["name", "email", "position"] },
+  newsletter: { Model: NewsletterSubscriber, statuses: NEWSLETTER_STATUSES, search: ["email"] },
 };
 
 const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

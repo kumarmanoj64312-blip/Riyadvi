@@ -30,7 +30,7 @@ const DEVICES = {
  *  - drag to rotate with inertia; it eases back to face you afterwards
  * Screen images are generated CanvasTextures (see utils/screenTexture).
  */
-export default function DeviceShowcase({ activeRef, reducedMotion, tier, params }: SceneProps) {
+export default function DeviceShowcase({ activeRef, viewProgress, reducedMotion, tier, params }: SceneProps) {
   const show = params.showcase;
   const device = show?.device ?? "phone";
   const cfg = DEVICES[device];
@@ -39,6 +39,7 @@ export default function DeviceShowcase({ activeRef, reducedMotion, tier, params 
   const baseMat = useRef<THREE.MeshBasicMaterial>(null);
   const overMat = useRef<THREE.MeshBasicMaterial>(null);
   const cycle = useRef({ current: 0, next: -1, fade: 0, timer: 0, clock: 0 });
+  const scroll = useRef(0); // smoothed viewProgress
 
   // One texture per screen, generated once and disposed on unmount.
   const textures = useMemo(
@@ -74,7 +75,11 @@ export default function DeviceShowcase({ activeRef, reducedMotion, tier, params 
     // Rotation: drag + inertia, then ease back to a gentle sway.
     const sway = reducedMotion ? -0.25 : -0.25 + Math.sin(c.clock * 0.5) * 0.3;
     const s = drag.step(dt, { swayTarget: sway });
-    group.rotation.set(s.rotX, s.rotY, 0);
+    // Scroll: the device swings round to face you as it enters, and tips away as it leaves.
+    scroll.current = THREE.MathUtils.damp(scroll.current, viewProgress.current, 5, dt);
+    const sc = scroll.current;
+    group.rotation.set(s.rotX + sc * 0.25, s.rotY + sc * 0.9, 0);
+    group.position.y = sc * 0.2;
 
     // Screen cycling (crossfade the overlay plane, then swap).
     if (!reducedMotion) c.timer += dt;

@@ -13,11 +13,15 @@ import type { SceneProps } from "@/three/scenes/types";
  * Adding a scene = one line here + the component file.
  */
 export const sceneRegistry = {
-  hero: lazy(() => import("@/three/scenes/hero/HeroEcosystem")),
+  // Alternative heroes kept for comparison (swap the import path):
+  //   "@/three/scenes/hero/FloatingDevices" (devices + light vortex), "@/three/scenes/hero/LiquidCore" (liquid gold core).
+  hero: lazy(() => import("@/three/scenes/hero/FlowTubes")),
   transformation: lazy(() => import("@/three/scenes/transformation/MorphScene")),
   service: lazy(() => import("@/three/scenes/services/ServiceScene")),
   device: lazy(() => import("@/three/scenes/showcase/DeviceShowcase")),
-  tech: lazy(() => import("@/three/scenes/tech/TechConstellation")),
+  tech: lazy(() => import("@/three/scenes/tech/TechGlobe")),
+  capabilities: lazy(() => import("@/three/scenes/capabilities/CapabilityScene")),
+  work: lazy(() => import("@/three/scenes/work/WorkRing")),
 } satisfies Record<string, LazyExoticComponent<ComponentType<SceneProps>>>;
 
 export type SceneKey = keyof typeof sceneRegistry;

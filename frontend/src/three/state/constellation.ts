@@ -1,26 +1,19 @@
 /**
- * Bridge between the tech constellation's DOM labels and its 3D scene.
+ * Bridge between the technology list (DOM) and the 3D technology globe.
  *
- * DOM → 3D: which technology the visitor is hovering/focusing (pauses that
- *           orbit ring and enlarges the node).
- * 3D → DOM: the scene projects every node to screen space each frame and
- *           moves the matching label element directly (style.transform).
+ * DOM → 3D: the technology hovered / focused in the list (the globe pops
+ *           that tile forward and pauses its spin).
+ * 3D → DOM: hovering a tile in the globe calls `onHover`, which the section
+ *           registers, so the description card and list follow the 3D too.
  *
- * Plain mutable module state — nothing here triggers a React render.
+ * Plain mutable module state: nothing here triggers a React render per frame.
  */
 export const constellation = {
-  labels: new Map<string, HTMLElement>(),
   hovered: null as string | null,
-  hoveredRing: -1,
+  onHover: null as ((slug: string | null) => void) | null,
 };
 
-export function registerLabel(slug: string, el: HTMLElement | null) {
-  if (el) constellation.labels.set(slug, el);
-  else constellation.labels.delete(slug);
-}
-
-/** DOM → 3D: mark a technology (and its ring) as hovered, or clear with null. */
-export function setHovered(slug: string | null, ring = -1) {
+/** DOM → 3D: mark a technology as hovered, or clear with null. */
+export function setHovered(slug: string | null) {
   constellation.hovered = slug;
-  constellation.hoveredRing = slug ? ring : -1;
 }

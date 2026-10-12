@@ -1,32 +1,40 @@
 import { Button } from "@/components/ui/Button";
-import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ProjectCard } from "@/components/portfolio/ProjectCard";
+import { WorkShowcase } from "@/components/portfolio/WorkShowcase";
 import { toCardData } from "@/components/portfolio/cardData";
-import { getFeaturedProjects, getServices } from "@/lib/content";
+import { getProjects, getServices } from "@/lib/content";
 
-/** Home › Featured portfolio — projects flagged `featured` in the data. */
+const HOME_COUNT = 6;
+
+/**
+ * Home › Selected work: six case studies (featured first). Tablet/desktop: a
+ * scroll-driven 3D ring of project screens; phones: a swipe carousel ending
+ * with a link to the full portfolio. Each card tilts and fans out its screens on hover, and
+ * opens its own /portfolio/[slug] case study.
+ */
 export async function FeaturedWork() {
-  const [projects, services] = await Promise.all([getFeaturedProjects(3), getServices()]);
+  const [projects, services] = await Promise.all([getProjects(), getServices()]);
+  // Six cards (featured first) keep the home page light; the carousel ends with a link to all of them.
+  const ordered = [...projects.filter((p) => p.featured), ...projects.filter((p) => !p.featured)].slice(0, HOME_COUNT);
   return (
-    <section aria-labelledby="work-heading" className="border-t border-line py-24 md:py-32">
+    <section aria-labelledby="work-heading" className="overflow-hidden border-t border-line py-section">
       <div className="container-site">
-        <SectionHeading
-          eyebrow="Selected work"
-          title={<span id="work-heading">Partnerships that delivered measurable growth</span>}
-          action={
-            <Button href="/portfolio" variant="secondary">
-              View all case studies
-            </Button>
+        <WorkShowcase
+          header={
+            <SectionHeading
+              eyebrow="Selected work"
+              titleId="work-heading"
+              title="Partnerships that delivered measurable growth"
+              action={
+                <Button href="/portfolio" variant="secondary">
+                  All case studies
+                </Button>
+              }
+            />
           }
+          projects={ordered.map((p) => toCardData(p, services))}
+          more={{ href: "/portfolio", label: `See all ${projects.length} case studies` }}
         />
-        <ul className="mt-12 grid gap-5 md:grid-cols-3">
-          {projects.map((p, i) => (
-            <Reveal as="li" key={p.slug} delay={i * 0.08}>
-              <ProjectCard project={toCardData(p, services)} />
-            </Reveal>
-          ))}
-        </ul>
       </div>
     </section>
   );

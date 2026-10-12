@@ -45,6 +45,7 @@ export function SceneView({ scene, fallback, className, params = NO_PARAMS }: Pr
   const activeRef = useRef(false);
   const hoverRef = useRef(false);
   const localPointer = useRef<ScenePointer>({ x: 0, y: 0 });
+  const viewProgress = useRef(0);
   const tier = useDeviceTier();
   const reducedMotion = useReducedMotion();
   const threeDisabled = useSceneStore(selectThreeDisabled);
@@ -95,6 +96,27 @@ export function SceneView({ scene, fallback, className, params = NO_PARAMS }: Pr
     };
   }, []);
 
+  // Scroll position of this box in the viewport → viewProgress (ref, no re-render).
+  // Skipped while the scene is inactive, so off-screen views cost no layout reads.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = (force?: unknown) => {
+      if (force !== true && !activeRef.current) return;
+      const r = el.getBoundingClientRect();
+      const half = window.innerHeight / 2;
+      const p = (r.top + r.height / 2 - half) / (half + r.height / 2);
+      viewProgress.current = Math.max(-1, Math.min(1, p));
+    };
+    update(true);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   const enabled = tier !== null && tier !== "low" && !threeDisabled && near;
 
   // Ask the layout to mount the global canvas the first time 3D is needed.
@@ -134,6 +156,7 @@ export function SceneView({ scene, fallback, className, params = NO_PARAMS }: Pr
           activeRef={activeRef}
           hoverRef={hoverRef}
           localPointer={localPointer}
+          viewProgress={viewProgress}
           params={params}
           tier={tier}
           reducedMotion={reducedMotion}

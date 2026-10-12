@@ -14,19 +14,19 @@ behind the page (mounted in the `(site)` layout). Sections render a `<SceneView>
 empty DOM box; Drei's `<View>` draws each scene into that box's rectangle of the shared canvas
 (viewport + scissor). One WebGL context, shaders compiled once, survives page navigation.
 
-**Hero "digital ecosystem"** — meaning: the business (metal core) at the centre of connected systems
-(nodes + links) with data flowing between them (pulses).
-- ~110 nodes on a Fibonacci sphere → one `InstancedMesh` (1 draw call). Links = k-nearest neighbours
-  computed once at mount → one `LineSegments`. Nodes never move relative to each other; the group
-  rotates, so nothing is recomputed per frame.
-- Hover: R3F raycast gives `instanceId`; I recolour that node, its neighbours and their links by
-  writing directly into the GPU colour buffers (no React state).
-- Data pulses: points whose position along an edge is computed in the vertex shader from one
-  `uTime` uniform.
-- Core: faceted metal reflecting a procedural Lightformer environment (no HDR download), a
-  counter-rotating edge shell, and a fresnel glow shader instead of bloom post-processing.
-- Motion: cursor/tilt parallax, scroll → rotation + camera dolly, idle drift — all damped with
-  `MathUtils.damp(…, delta)` so it's frame-rate independent.
+**Hero "flowing gold"** (`FlowTubes`): satin tubes in bronze-to-gold finishes winding behind the
+centred headline. Each tube is a seeded CatmullRom curve turned into a `TubeGeometry`; a patched
+`MeshPhysicalMaterial` (`onBeforeCompile`) adds slow undulation in the vertex shader from one shared
+time uniform, so the CPU only writes a number per frame. The tubes "grow" in on load by animating the
+geometry's draw range; camera-relative fog melts the far ones into black (cheap depth of field); the
+gold highlights come from a Lightformer studio (`GoldStudio`) rendered to a cube map once. Pointer =
+camera parallax, scroll = dolly + turn. I tried and kept two alternative heroes (`FloatingDevices`
+with a GPU light vortex, and `LiquidCore`, a noise-displaced molten-gold sphere); switching is one line
+in the scene registry.
+
+**Capabilities** (`CapabilityScene`): four clearcoat slabs (Strategy → Growth) with engraved names,
+gold rims and particles rising through them. The list and the 3D stay in sync both ways through a
+tiny mutable bridge object, with no per-frame React renders.
 
 **Transformation story** — one point cloud, six meanings: scattered fragments (challenge) → grid
 (strategy/plan) → wireframe cube (design structure) → network (technology) → rising helix (launch)
@@ -41,17 +41,21 @@ growth chart; AR/VR = portal; 3D modeling = object revealing its wireframe topol
 UI/UX = chaos → aligned layout. All six home tiles render live in the one shared canvas — the reason
 for the single-canvas architecture.
 
-**Case study 3D** — data flag `showcase: { device }` turns any case study into an interactive
-presentation: a phone or laptop built from rounded boxes showing the project's screens. The screens
-are CanvasTextures drawn at runtime from the project's data (client, brand accent, screen names), so
-no screenshots are downloaded; real ones can replace them via TextureLoader. Tap to switch screens,
-drag to rotate (custom `useDragRotate`, because Drei OrbitControls would grab events for the whole
-shared canvas).
+**Case studies, home** (`WorkStage` + `WorkRing`): a product-launch carousel. Each project is a
+gold-trimmed phone showing its own mobile screen, in a curved row of leaning phones; the one in the
+spotlight stands up under a glowing halo on a podium. GSAP pins the section and the scroll progress
+picks the spotlit project; the 3D glides there with damping, and the caption follows (React renders only
+when the project changes). Phones and reduced motion get a native swipe carousel instead.
 
-**Technology ecosystem** — data-driven constellation: technologies orbit a core on three tilted
-rings (experience, engine, reach). Hover pauses a ring; drag rotates the system. Labels are real DOM:
-each frame the scene projects every node to screen space and moves its label (no `<Html>`, no React
-renders). The legend under the scene is the accessible version and drives the same highlight.
+**Case study pages**: data flag `showcase: { device }` turns any case study into an interactive phone
+or laptop showing the project's screens (runtime CanvasTextures from project data). Drag to rotate
+with a custom `useDragRotate` (Drei OrbitControls would grab events for the whole shared canvas).
+
+**Technology globe** (`TechGlobe`): every technology is a glass tile with its real logo (Simple Icons
+paths drawn onto a canvas texture) on a Fibonacci sphere, wired to a gold core. Tiles always face the
+camera and fade with depth. Hovering a tile or the accessible legend pops it forward and shows how we
+use it; drag spins, scroll tilts. I replaced an earlier orbit-ring version because its floating labels
+overlapped.
 
 **About timeline** — GSAP ScrollTrigger: scrubbed progress line, cards swinging in with a slight 3D
 rotation, parallax outline years, dots lighting up as you reach them. Not WebGL on purpose — depth

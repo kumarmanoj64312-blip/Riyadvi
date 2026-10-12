@@ -4,17 +4,13 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { ConsultationForm } from "@/components/forms/ConsultationForm";
 import { getServices } from "@/lib/content";
 import { siteConfig, whatsappLink } from "@/lib/site";
+import { contactRequirements } from "@/lib/requirements";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Talk to Riyadvi Software Technologies — request a quote, book a free consultation, or reach us on WhatsApp.",
+    "Talk to Riyadvi Software Technologies: request a quote, book a free consultation, or reach us on WhatsApp.",
 };
-
-const EXTRA_REQUIREMENTS = [
-  { value: "business-strategy", label: "Business strategy / consulting" },
-  { value: "other", label: "Something else" },
-];
 
 /**
  * /contact — quote form (#quote), consultation booking (#consultation) and
@@ -23,7 +19,7 @@ const EXTRA_REQUIREMENTS = [
  */
 export default async function ContactPage({ searchParams }: PageProps<"/contact">) {
   const [{ service }, services] = await Promise.all([searchParams, getServices()]);
-  const requirements = [...services.map((s) => ({ value: s.slug, label: s.title })), ...EXTRA_REQUIREMENTS];
+  const requirements = contactRequirements(services);
   const preselected = typeof service === "string" && requirements.some((r) => r.value === service) ? service : "";
 
   const channels = [
@@ -90,10 +86,10 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
             <SectionHeading
               eyebrow="Free consultation"
               title="30 minutes with a senior consultant"
-              description="We'll review your goals, current setup and options — and you'll leave with clear next steps, whether or not we work together."
+              description="We'll review your goals, current setup and options, and you'll leave with clear next steps, whether or not we work together."
             />
             <ul className="mt-8 space-y-3 text-muted">
-              {["No obligation, no sales pitch", "Video call or phone — your choice", "Written summary of recommendations"].map((t) => (
+              {["No obligation, no sales pitch", "Video call or phone, your choice", "Written summary of recommendations"].map((t) => (
                 <li key={t} className="flex gap-3">
                   <span aria-hidden="true" className="text-gold">
                     ✓

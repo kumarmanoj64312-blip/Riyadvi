@@ -12,7 +12,7 @@ export function Logo({ href = "/", label = "home" }: { href?: string; label?: st
   return (
     <Link
       href={href}
-      aria-label={`${siteConfig.name} — ${label}`}
+      aria-label={`${siteConfig.name}, ${label}`}
       className="flex items-center gap-2.5 text-fg"
     >
       <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">

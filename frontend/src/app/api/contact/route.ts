@@ -8,6 +8,6 @@ export const POST = formRoute(contactSchema, async (data, meta) => {
   const enquiry = await createContactEnquiry(data, meta);
   return ok(
     { id: enquiry.id },
-    { status: 201, message: "Thank you! Your message has been received — we'll get back to you within one business day." },
+    { status: 201, message: "Thank you! Your message has been received. We'll get back to you within one business day." },
   );
 });

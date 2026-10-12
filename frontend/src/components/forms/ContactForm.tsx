@@ -83,7 +83,7 @@ export function ContactForm({ requirements, defaultRequirement = "" }: Props) {
         )}
       </Field>
       <Field label="Tell us about your project" required error={errors.message?.message} className="sm:col-span-2">
-        {(a11y) => <Textarea {...a11y} {...register("message")} placeholder="Goals, timeline, budget range — anything that helps." />}
+        {(a11y) => <Textarea {...a11y} {...register("message")} placeholder="Goals, timeline, budget range, anything that helps." />}
       </Field>
 
       <Honeypot {...register("website")} />

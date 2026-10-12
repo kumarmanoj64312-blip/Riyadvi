@@ -40,7 +40,7 @@ export async function postJson<T = unknown>(path: string, body: unknown): Promis
       ok: false,
       message: timedOut
         ? "Our server is taking longer than usual to respond. Please try again in a moment."
-        : "We couldn't reach the server — please check your connection and try again.",
+        : "We couldn't reach the server. Please check your connection and try again.",
       fieldErrors: {},
     };
   }
@@ -66,7 +66,7 @@ export async function postForm<T = unknown>(path: string, form: FormData): Promi
     const timedOut = err instanceof DOMException && err.name === "TimeoutError";
     return {
       ok: false,
-      message: timedOut ? "The upload is taking too long — please try again." : "We couldn't reach the server — please check your connection.",
+      message: timedOut ? "The upload is taking too long. Please try again." : "We couldn't reach the server. Please check your connection.",
       fieldErrors: {},
     };
   }

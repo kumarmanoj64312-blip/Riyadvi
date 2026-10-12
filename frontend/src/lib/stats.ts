@@ -9,7 +9,7 @@ export function companyStats(projects: Project[], services: Service[]) {
   const industries = new Set(projects.map((p) => p.industry)).size;
   return [
     { value: String(siteConfig.founded), label: "Founded" },
-    { value: `${projects.length}`, label: "Featured case studies" },
+    { value: `${projects.length}`, label: "Case studies" },
     { value: `${industries}`, label: "Industries served" },
     { value: `${services.length}`, label: "Core capabilities" },
   ];

@@ -11,8 +11,9 @@ export async function ServicesSection() {
       <div className="container-site">
         <SectionHeading
           eyebrow="What we do"
-          title={<span id="services-heading">Six capabilities. One partner for your whole digital journey.</span>}
-          description="Hover a capability to see it in action — then dive into how we deliver it."
+          titleId="services-heading"
+          title="Six capabilities, one accountable team"
+          description="Hover a capability to see it in action, then open it for the full approach."
           action={
             <Button href="/services" variant="secondary">
               All services

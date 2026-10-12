@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ComponentType } from "react";
+import { useRef, useState, type ComponentType } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
@@ -30,7 +30,7 @@ const VARIANTS: Record<ServiceSceneType, ComponentType<VariantProps>> = {
 
 const FOV = 35;
 const CAMERA_Z = 7;
-const { damp } = THREE.MathUtils;
+const { damp, clamp } = THREE.MathUtils;
 
 /**
  * The single reusable service visual: <SceneView scene="service"
@@ -41,12 +41,15 @@ const { damp } = THREE.MathUtils;
  * smoothed hover value, and the "tilt toward the pointer" rig.
  */
 export default function ServiceScene(props: SceneProps) {
-  const { activeRef, hoverRef, localPointer, reducedMotion, params, tier } = props;
+  const { activeRef, hoverRef, localPointer, viewProgress, reducedMotion, params, tier } = props;
   const Variant = VARIANTS[params.serviceType ?? "generic"] ?? GenericScene;
   const isHero = params.variant === "hero";
 
   const hover = useRef(0);
+  const scroll = useRef(0); // smoothed viewProgress
   const rigRef = useRef<THREE.Group>(null);
+  // Touch screens have no hover → tiles "engage" from scroll position instead.
+  const [isTouch] = useState(() => window.matchMedia("(pointer: coarse)").matches);
 
   // Content is authored inside ~±2.1 × ±1.8 units; scale it to fit the box.
   // Tiles keep a wider safety margin (they tilt more relative to their size).
@@ -60,12 +63,23 @@ export default function ServiceScene(props: SceneProps) {
     const rig = rigRef.current;
     if (!activeRef.current || !rig) return;
     const dt = Math.min(delta, 0.1);
-    hover.current = damp(hover.current, hoverRef.current ? 1 : 0, reducedMotion ? 30 : 6, dt);
+    scroll.current = damp(scroll.current, viewProgress.current, 6, dt);
+    const s = scroll.current;
 
-    // Tiles only tilt while hovered; the big hero always follows the pointer.
+    // "Engaged" amount (layers separate, bars climb…) comes from:
+    //  - hover (desktop),
+    //  - hero: scrolling down past it opens the visual up,
+    //  - touch tiles: the tile reaching the middle of the screen.
+    const fromScroll = isHero ? clamp(-s * 2.2, 0, 1) : isTouch ? clamp(1 - Math.abs(s) * 2.5, 0, 1) : 0;
+    const engage = hoverRef.current ? 1 : fromScroll;
+    hover.current = damp(hover.current, engage, reducedMotion ? 30 : 6, dt);
+
+    // Pointer tilt (tiles only while hovered; the hero always follows) + scroll turn:
+    // the object rotates and drifts as its section passes through the viewport.
     const follow = isHero ? 1 : hover.current;
-    rig.rotation.y = damp(rig.rotation.y, localPointer.current.x * 0.35 * follow, 4, dt);
-    rig.rotation.x = damp(rig.rotation.x, -localPointer.current.y * 0.25 * follow, 4, dt);
+    rig.rotation.y = damp(rig.rotation.y, localPointer.current.x * 0.35 * follow + s * (isHero ? 0.45 : 0.3), 4, dt);
+    rig.rotation.x = damp(rig.rotation.x, -localPointer.current.y * 0.25 * follow + s * 0.15, 4, dt);
+    rig.position.y = s * (isHero ? 0.25 : 0.18); // parallax: lags slightly behind the page
   });
 
   return (

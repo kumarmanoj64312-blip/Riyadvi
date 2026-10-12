@@ -19,6 +19,7 @@ const ICONS = {
   consultations: icon(<><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" /></>),
   checkups: icon(<><path d="M3 12h4l3-7 4 14 3-7h4" /></>),
   downloads: icon(<><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" /></>),
+  newsletter: icon(<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>),
   applications: icon(<><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></>),
   home: icon(<><path d="M3 11 12 4l9 7" /><path d="M5 10v10h14V10" /></>),
   logout: icon(<><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10" /></>),
@@ -31,6 +32,7 @@ export const ADMIN_NAV = [
   { href: "/admin/health-checkups", label: "Health checkups", icon: ICONS.checkups, group: "Leads" },
   { href: "/admin/leads", label: "Guide downloads", icon: ICONS.downloads, group: "Leads" },
   { href: "/admin/applications", label: "Job applications", icon: ICONS.applications, group: "Leads" },
+  { href: "/admin/newsletter", label: "Newsletter", icon: ICONS.newsletter, group: "Leads" },
 ] as const;
 const GROUPS = ["Overview", "Leads"] as const;
 

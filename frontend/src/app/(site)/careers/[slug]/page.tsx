@@ -11,7 +11,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/careers/[slug]">): Promise<Metadata> {
   const job = await getJob((await params).slug);
   if (!job) return { title: "Role not found" };
-  return { title: `${job.title} — Careers`, description: job.summary };
+  return { title: `${job.title} - Careers`, description: job.summary };
 }
 
 /** /careers/[slug] — data → JobTemplate, plus JobPosting structured data (Google Jobs). */

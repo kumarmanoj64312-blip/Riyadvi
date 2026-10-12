@@ -49,8 +49,8 @@ export function LeadMagnetForm() {
         className="flex flex-col items-start gap-4 rounded-2xl border border-gold/40 bg-gold/5 p-8"
       >
         <h2 className="text-2xl font-semibold">Your guide is ready</h2>
-        <p className="text-muted">Thanks! Download the PDF below — it&apos;s yours to keep and share with your team.</p>
-        <a href={downloadUrl} download className={buttonClasses({ size: "lg" })}>
+        <p className="text-muted">Thanks! Download the PDF below. It&apos;s yours to keep and share with your team.</p>
+        <a href={downloadUrl} download data-magnetic="" className={buttonClasses({ size: "lg" })}>
           Download the guide (PDF)
         </a>
         <p className="text-sm text-muted">

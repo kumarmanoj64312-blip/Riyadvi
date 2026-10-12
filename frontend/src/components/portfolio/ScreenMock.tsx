@@ -25,7 +25,7 @@ export function ScreenMock({ client, accent, screen, variant = 0, className }: P
   return (
     <div
       style={style}
-      aria-label={`${client} — ${screen.label} screen (illustration)`}
+      aria-label={`${client}: ${screen.label} screen (illustration)`}
       role="img"
       className={cn(
         "overflow-hidden border border-line-strong bg-[#0c0c0c] shadow-[0_30px_80px_-30px_rgb(0_0_0/0.9)]",

@@ -19,21 +19,39 @@ real-time 3D throughout, a working lead pipeline and an admin dashboard.
 Blog + articles · Careers + job pages · Contact · Business Health Checkup · Software Project Planning
 Guide · Admin dashboard · 404 / error pages.
 
-**3D & interaction (5 WebGL experiences, one shared canvas):**
+**3D & interaction (7 WebGL experiences, one shared canvas):**
 
 | Where | Experience |
 |---|---|
-| Home hero | "Digital ecosystem": metal core + ~110 instanced nodes and links. Cursor/tilt parallax, node hover lights its connections, GPU-animated data pulses, scroll-linked rotation and dolly |
+| Home hero | "Flowing gold" (`FlowTubes`), inspired by the Draftly "Power AI" preset's look and rebuilt in real-time 3D: thick satin tubes in bronze-to-gold finishes wind through the dark behind a centred headline (full-bleed stage, readability vignette, soft fade into the page). Tubes grow in on load (draw range), undulate in the vertex shader, catch gold highlights from the studio light rig (`GoldStudio`), and fade into black with camera-relative fog for depth; pointer parallax, scroll dolly + turn. Static SVG fallback. Alternative heroes kept in `three/scenes/registry.ts`: `FloatingDevices` (+ `LightVortex`) and `LiquidCore`. |
 | Home · Our approach | Pinned scroll story; one point cloud morphs through 6 formations (scattered → grid → structure → network → helix → growth chart) in a vertex shader driven by GSAP ScrollTrigger |
-| Services (home tiles, overview, every service page) | One `ServiceScene` component, six visuals: exploding browser layers, phone with orbiting screens, growth chart, AR/VR portal, drag-to-rotate torus knot with wireframe reveal, UI cards snapping into a layout |
-| Technology ecosystem | Data-driven orbiting constellation; hover pauses a ring, drag rotates; labels are real DOM text positioned by the 3D scene |
-| Case studies | Rotatable phone / laptop showing the project's screens (runtime canvas textures); tap to switch screens |
+| Services (home tiles, overview, every service page) | One `ServiceScene` component, six visuals: exploding browser layers, phone with orbiting screens, growth chart, AR/VR portal, drag-to-rotate torus knot with wireframe reveal, UI cards snapping into a layout. Turns and drifts with scroll; on service pages scrolling "opens up" the visual; on touch screens tiles engage when centred (no hover needed) |
+| Technology ecosystem | Data-driven technology globe (`TechGlobe`): every technology is a glass tile with its real logo on a Fibonacci sphere, wired to a gold core by spokes; tiles face the viewer and fade with depth. Hover a tile or a list item → it pops forward, the card shows how we use it (two-way DOM ↔ 3D bridge); drag to spin, scroll tilts |
+| Case studies (all 10) | Rotatable phone / laptop showing the project's screens (runtime canvas textures); tap to switch screens; swings round to face you as you scroll to it |
+| Home · Capabilities | WebGL layer stack (`CapabilityScene`): four polished clearcoat slabs (Strategy → Design → Engineering → Growth) with glowing gold rims, engraved names, corner light pillars and particles rising through the stack. Arrives exploded and assembles as it centres on scroll; hovering a slab or a list item lifts that layer (list and 3D stay in sync); pointer tilt + idle float. CSS-3D planes remain as the static fallback |
 | About / Why Riyadvi | Scroll-driven timeline (GSAP: scrubbed line, CSS-3D swing-in, parallax years) |
+
+**Motion & micro-interactions (site-wide):**
+
+| What | How |
+|---|---|
+| Display typography | Syne headings (wide, design-studio character) on a fluid display scale (`text-display-*` tokens), Inter body |
+| Kinetic headings | `SplitText`: masked word-by-word reveal on section titles and page titles. On the hero only the gold outcome words animate: the headline itself paints immediately (it is the LCP element) |
+| Preloader | First visit per session: the logo mark draws itself, then lifts away (~1.1 s, pure CSS, content rendered underneath; skipped with reduced motion) |
+| Page transitions | `app/(site)/template.tsx`: the new page fades in while settling from a slightly smaller scale (opacity + transform only, ~0.6 s); skipped on first load and with reduced motion |
+| Magnetic buttons | `PointerFX`: one delegated listener, desktop/fine pointer only, CSS `translate` so it never fights hover/press scales (no custom cursor: the native cursor is kept) |
+| Case-study showcase | Tablet/desktop: a product-launch style scroll carousel (`WorkStage` + `WorkRing`). Each case study is a gold-trimmed phone showing its mobile screen, in a curved row of leaning phones; the one in the spotlight stands upright, grows and lights up under a glowing gold halo on a gold-rimmed podium. GSAP pins the section and scrolling rolls the row right → left, one project per step; caption, services and "Open case study" follow; dots jump; clicking the spotlit phone opens it. Phones / reduced motion: native swipe carousel |
+| Services | Zig-zag 7/5 grid; hover/focus swaps each tagline for its key features |
+| Technology logos | Real Simple Icons marks (`lib/techIcons.ts`): drawn onto the globe's tile textures and used (monochrome) in the legend |
+| Scroll-velocity marquee | One GSAP band of capabilities that speeds up / reverses with the visitor's scrolling |
+| Closing contact | Home ends on the working contact form under a cursor-following stage light (form code loads only as you approach it) |
+| Blog articles | Reading-progress bar, sticky "On this page" TOC with a sliding active indicator (Motion `layoutId`), reveals on quotes/callouts |
+| Job pages | Animated title, staggered reveals, "How hiring works" track that draws itself in |
 
 **Lead generation & API:** contact/quote form · consultation booking · 6-step Business Health
 Checkup with server-side scoring and recommendations · lead-magnet PDF download · job applications with
-resume upload · all stored in MongoDB · email notification to the team · admin dashboard with stats,
-search, status updates and resume download.
+resume upload · newsletter signup (footer) · all stored in MongoDB · email notification to the team ·
+admin dashboard with stats, search, status updates and resume download.
 
 ---
 
@@ -51,7 +69,8 @@ search, status updates and resume download.
 | Hosting | Vercel (one project: pages + API), MongoDB Atlas |
 
 **3D libraries used:** three, @react-three/fiber, @react-three/drei.
-**Animation libraries used:** gsap (+ ScrollTrigger, @gsap/react), lenis, motion.
+**Animation libraries used:** gsap (+ ScrollTrigger, @gsap/react), lenis, motion. Plus plain CSS
+keyframes / custom properties for the text reveal, preloader and tilt cards (cheapest option where it suffices).
 
 ---
 
@@ -146,11 +165,12 @@ All responses: `{ success, message, data?, errors?: [{ field, message }] }`.
 | POST | `/api/contact`, `/api/consultation` | rate-limited, honeypot, Zod-validated |
 | POST | `/api/health-checkup` | answers validated against the questionnaire config → score + recommendations |
 | POST | `/api/lead-magnet` | stores lead, returns the guide URL |
+| POST | `/api/newsletter` | rate-limited, honeypot, Zod; idempotent (201 new / 200 already subscribed, same message) |
 | POST | `/api/applications` | multipart; PDF/DOC/DOCX ≤ 5 MB, magic-byte checked, stored in GridFS |
 | GET | `/api/services`, `/api/projects`, `/api/posts`, `/api/jobs` (+ `/:slug`) | published content |
 | POST | `/api/admin/login`, `/api/admin/logout` | httpOnly session cookie |
 | GET | `/api/admin/me`, `/api/admin/stats` | 🔒 |
-| GET | `/api/admin/:collection` | 🔒 enquiries · consultations · health-checkups · lead-magnet · applications (`?q=&status=&page=`) |
+| GET | `/api/admin/:collection` | 🔒 enquiries · consultations · health-checkups · lead-magnet · applications · newsletter (`?q=&status=&page=`) |
 | PATCH | `/api/admin/:collection/:id/status` | 🔒 JSON only (CSRF guard) |
 | GET | `/api/admin/applications/:id/resume` | 🔒 resume download |
 
@@ -181,10 +201,32 @@ All responses: `{ success, message, data?, errors?: [{ field, message }] }`.
 - Three.js/R3F code-split; GSAP loaded dynamically; Motion via `LazyMotion`.
 - Fallback SVGs drawn as a few bucketed paths: home HTML 582 KB → 228 KB.
 - `next/font` (Inter, self-hosted, swap), Server Components by default.
+- **API next to the database:** Vercel functions run in `bom1` (Mumbai), the same region as the Atlas
+  cluster (`vercel.json`). Moving them from `iad1` cut warm admin pages from ~0.5–2 s to ~0.1 s.
+  Dashboard stats use one aggregation per collection (5 queries instead of 15) and tables read with `lean()`.
 
 **Lighthouse (local production build):** Accessibility, Best Practices and SEO 100 on all key pages;
 Performance 96–100 desktop on most pages and 62–81 mobile; the 3D-heavy home page is lower on mobile
-(see limitations). axe-core: 0 violations across 12 pages at desktop and mobile widths.
+(see limitations). Latest home page run (local production build): mobile 45 / desktop 69 performance,
+accessibility 100, best practices 100, SEO 100, CLS ≈ 0. axe-core: 0 violations across 12 pages at desktop and mobile widths.
+
+**Home page after the October redesign (measured, not estimated).** The page now has three more
+interactive sections, a preloader and a second font. To check the cost, a build of the previous commit
+was measured against the new build, with runs interleaved:
+
+- **Real Chromium with 4× CPU throttling:** LCP 0.55–1.1 s (new) vs 0.45–1.0 s (old). No real-browser regression.
+- **Lighthouse mobile (simulated throttling), first measurement:** the new page scored lower. The
+  causes found and fixed:
+  - The hero headline started hidden inside its word-reveal mask. It now paints immediately.
+  - The footer form pulled react-hook-form and Zod into every page, and the home contact form hydrated
+    at load. That's about 106 KB of JavaScript, now removed or loaded lazily.
+  - Every carousel card rendered three full screen mockups. Lighter "ghost" screens and a
+  6-card carousel cut the DOM from 1,745 to 1,324 elements.
+- **What remains:** Lighthouse still scores the home page lower than before on this machine (roughly
+  35–47 vs 52–60, LCP about 5–6 s vs 3.5–4 s simulated). This machine's runs were noisy: observed
+  first paint varied 1.0–3.1 s between identical runs. Re-measure on the deployed site with PageSpeed
+  Insights. If the score matters more than the intro, removing `<Preloader />` from
+  `app/(site)/layout.tsx` is a one-line change.
 
 ---
 
@@ -195,12 +237,31 @@ The full per-step log (prompts, what was generated, bugs found, decisions) is in
 
 | | |
 |---|---|
-| **Tool** | Claude Code (Claude Opus), agentic coding in VS Code |
+| **Tool** | Claude Code (Claude Opus), agentic coding in VS Code, guided by the **taste-skill** design skills (`npx skills add Leonxlnx/taste-skill`, in `.claude/skills/`). Full list of tools, libraries and resources: [`TOOLS.md`](TOOLS.md) |
 | **Purpose** | Architecture planning, code generation for the UI, API and 3D, debugging, automated verification (type-check, lint, builds, Playwright E2E, Lighthouse, axe), documentation |
 | **Example prompt** | *"Deep analyze the full prompt and PDF; the main focus is 3D"* → produced the architecture plan (one shared canvas with Drei View, API + ISR content, GridFS resumes) that every later step followed. Each step was then approved with a short prompt after reviewing the plan. |
 | **What was generated** | Most of the code, in 11 reviewed steps, each verified on a real GPU and in mobile emulation |
 | **What was manually changed** | **TODO (me):** list the parameters, copy and code I changed myself (see the "make it yours" notes per step in the AI log) |
 | **Why this tool** | It reads the installed library versions' own docs and source before coding (Next 16, R3F 9, Drei 10, Mongoose 9, Zod 4 are all newer than most training data) and verifies its own output end to end, which caught real bugs before they shipped |
+
+### Design resources explored
+
+The client brief pointed to these AI-era design libraries. We reviewed them as **references for the kind
+of interaction expected**. No code, prompts or assets were copied from them; every effect on this site
+was written for this codebase, on the existing single-canvas architecture and performance budget.
+
+| Resource | What it is | What it informed |
+|---|---|---|
+| [getlayers.ai](https://getlayers.ai) | Library of copy-as-prompt templates, sections, 3D scenes and WebGL gradients for AI coding tools | Confirmed the "doesn't look AI-made" bar: kinetic type, page transitions and interactive previews instead of static card grids |
+| [threeui.com](https://threeui.com) | Copy-ready Three.js / R3F components: product turntables, text effects, scroll-driven choreography, pointer-responsive lighting | Scroll-reactive 3D on every scene (not just the hero), pointer-reactive cards, turntable-style case-study device |
+| [Draftly "Asme" preset](https://www.draftly.space/presets/asme) | Video-based template (person at a desk inside swirling light streaks) | Inspired the light-vortex hero variant (`LightVortex`); its videos were not used, the effect was rebuilt as GPU particles |
+| [Draftly "Power AI" preset](https://www.draftly.space/presets/power-ai) | Video-based template (glossy tubes behind a centred title) | Inspired the current hero (`FlowTubes`); rebuilt as real-time 3D tubes in Riyadvi gold, no video used |
+| Energy-drink product site (Instagram reel shared by the developer) | Curved row of leaning cans, centre can spotlit on a podium | Inspired the case-study spotlight carousel (`WorkRing`) |
+
+We didn't paste their whole-page templates: each is a self-contained page with its own WebGL context,
+and combining several would break the one-shared-canvas design and the mobile performance budget.
+
+**TODO (me):** add which specific components/templates I looked at and what I took from each.
 
 **Bugs found through AI-run testing** (details in the log): an admin login redirect loop (cookie path),
 a swallowed "Next" click in the multi-step form (layout shift at mousedown), 3D running on emulated GPUs
@@ -226,7 +287,15 @@ that only touched.
   included on purpose (they must be real).
 - **Mobile performance on the home page:** real-time 3D costs ~1.5 s of extra main-thread work on a
   throttled mid-range phone (bundle parse + shader compile). Weak devices are protected by tiering and
-  the FrameGuard, but capable phones still pay it.
+  the FrameGuard, but capable phones still pay it. Lighthouse's simulated mobile score for the home page
+  is lower after the October redesign (see Performance).
+- **Portfolio visuals are CSS mockups**, not real screenshots: approved project screenshots are needed
+  (swap `ScreenMock` for `next/image`).
+- **Contact details are placeholders** until `NEXT_PUBLIC_CONTACT_PHONE` / `NEXT_PUBLIC_WHATSAPP_NUMBER`
+  / `NEXT_PUBLIC_CALENDLY_URL` are set; some copy promises reply times ("within one business day",
+  "within 48 hours"). Confirm these with Riyadvi.
+- **Newsletter** stores subscribers for export; there is no mailing-platform integration or
+  double opt-in yet.
 - **Lead magnet is soft-gated:** the PDF is a static file, reachable by direct URL.
 - **Single admin account**, seeded into MongoDB from `.env`; no roles, user management UI or password-reset flow.
 - **Email** depends on the SMTP provider; some free hosts block SMTP ports (an HTTP email API is a drop-in

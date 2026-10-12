@@ -14,7 +14,7 @@ export default function NotFound() {
       <Navbar />
       <main id="main" className="container-site flex min-h-[80dvh] flex-col items-start justify-center pt-24">
         <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold">Error 404</p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-6xl">
+        <h1 className="text-display-xl mt-4 font-semibold">
           This page drifted out of the network.
         </h1>
         <p className="mt-4 max-w-lg text-muted">

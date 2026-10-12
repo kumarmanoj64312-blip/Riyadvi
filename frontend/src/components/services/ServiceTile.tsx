@@ -6,8 +6,12 @@ import { m, useMotionTemplate, useMotionValue, useReducedMotion } from "motion/r
 import { SceneView } from "@/three/canvas/SceneView";
 import { ServiceFallback } from "@/three/fallbacks/ServiceFallback";
 import type { Service } from "@/types/content";
+import { cn } from "@/lib/cn";
 
-export type ServiceCardData = Pick<Service, "slug" | "title" | "tagline" | "sceneType">;
+export type ServiceCardData = Pick<Service, "slug" | "title" | "tagline" | "sceneType"> & {
+  /** Top key features, revealed in place of the tagline on hover / keyboard focus. */
+  highlights?: string[];
+};
 
 type Props = { service: ServiceCardData; index: number };
 
@@ -17,6 +21,8 @@ type Props = { service: ServiceCardData; index: number };
  *    card is hovered (the card is the `data-scene-host`)
  *  - Motion: staggered entrance, hover lift, and a gold spotlight that follows
  *    the cursor (motion values → no React re-render on pointer move)
+ *  - hover / focus swaps the tagline for the service's key features (both sit
+ *    in the same grid cell, so nothing shifts; opacity/transform only)
  *  - the whole card links to the service's own page
  */
 export function ServiceTile({ service, index }: Props) {
@@ -25,6 +31,7 @@ export function ServiceTile({ service, index }: Props) {
   const my = useMotionValue(-500);
   const spotlight = useMotionTemplate`radial-gradient(380px circle at ${mx}px ${my}px, rgb(212 175 55 / 0.13), transparent 70%)`;
 
+  const hasHighlights = (service.highlights?.length ?? 0) > 0;
   const params = useMemo(() => ({ serviceType: service.sceneType, variant: "tile" as const }), [service.sceneType]);
 
   return (
@@ -50,8 +57,9 @@ export function ServiceTile({ service, index }: Props) {
         }}
         className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line transition-colors duration-500 hover:border-gold/40"
       >
-        {/* Transparent visual area: the shared WebGL canvas shows through here. */}
-        <div className="relative aspect-[4/3]">
+        {/* Transparent visual area: the shared WebGL canvas shows through here.
+            Equal height on desktop so 7- and 5-column tiles line up in a row. */}
+        <div className="relative aspect-[4/3] lg:aspect-auto lg:h-72">
           <SceneView
             scene="service"
             params={params}
@@ -61,9 +69,30 @@ export function ServiceTile({ service, index }: Props) {
         </div>
 
         <div className="relative mt-auto bg-gradient-to-t from-surface-2 to-transparent p-6 pt-2">
-          <p className="font-mono text-xs tracking-widest text-gold">{String(index + 1).padStart(2, "0")}</p>
-          <h3 className="mt-2 text-xl font-semibold tracking-tight">{service.title}</h3>
-          <p className="mt-1 text-sm text-muted">{service.tagline}</p>
+          <h3 className="text-xl font-semibold">{service.title}</h3>
+          <div className="mt-1 grid text-sm">
+            <p
+              className={cn(
+                "col-start-1 row-start-1 text-muted transition-[opacity,translate] duration-500 ease-premium",
+                hasHighlights && "group-hover:-translate-y-1 group-hover:opacity-0 group-focus-visible:-translate-y-1 group-focus-visible:opacity-0",
+              )}
+            >
+              {service.tagline}
+            </p>
+            {hasHighlights && (
+              <ul
+                aria-label="Key features"
+                className="col-start-1 row-start-1 flex translate-y-1 flex-wrap gap-x-4 gap-y-1 text-fg opacity-0 transition-[opacity,translate] duration-500 ease-premium group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+              >
+                {service.highlights!.map((h) => (
+                  <li key={h} className="flex items-center gap-1.5">
+                    <span aria-hidden="true" className="text-gold">+</span>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gold">
             Explore
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">

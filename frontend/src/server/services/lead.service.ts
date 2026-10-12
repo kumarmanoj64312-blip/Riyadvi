@@ -1,9 +1,10 @@
 import { ContactEnquiry } from "../models/ContactEnquiry";
 import { ConsultationRequest } from "../models/ConsultationRequest";
 import { LeadMagnetLead } from "../models/LeadMagnetLead";
+import { NewsletterSubscriber } from "../models/NewsletterSubscriber";
 import { env } from "../config/env";
 import { notifyTeamInBackground } from "./notification.service";
-import type { ConsultationInput, ContactInput, LeadMagnetInput } from "../validators/leads";
+import type { ConsultationInput, ContactInput, LeadMagnetInput, NewsletterInput } from "../validators/leads";
 
 /*
  * Lead business logic. Route Handlers stay thin (HTTP in/out); everything
@@ -59,4 +60,28 @@ export async function createLeadMagnetLead(data: LeadMagnetInput, meta: RequestM
     data.email,
   );
   return { id: lead.id as string, downloadUrl: env().GUIDE_DOWNLOAD_URL };
+}
+
+/**
+ * Adds an email to the newsletter list. Idempotent: an existing subscriber is
+ * left as-is (an "unsubscribed" one opting in again goes back to "new").
+ * No team email per signup: subscribers are reviewed in the admin instead.
+ */
+export async function subscribeToNewsletter(data: NewsletterInput, meta: RequestMeta) {
+  const existing = await NewsletterSubscriber.findOne({ email: data.email });
+  if (existing) {
+    if (existing.status === "unsubscribed") {
+      existing.status = "new";
+      await existing.save();
+    }
+    return { created: false };
+  }
+  try {
+    await NewsletterSubscriber.create({ ...data, userAgent: meta.userAgent });
+    return { created: true };
+  } catch (err) {
+    // Two submissions racing past findOne: the unique index rejects the second one.
+    if ((err as { code?: number }).code === 11000) return { created: false };
+    throw err;
+  }
 }

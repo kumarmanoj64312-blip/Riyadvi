@@ -4,6 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/animation/gsap";
 import { useLenis } from "@/animation/LenisProvider";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { SplitText } from "@/components/ui/SplitText";
 import { SceneView } from "@/three/canvas/SceneView";
 import { scrollState } from "@/three/state/input";
 import type { TransformationStage } from "@/types/content";
@@ -126,9 +127,8 @@ export function StoryScroller({ stages, fallback }: Props) {
 
         {/* Copy */}
         <div className="relative flex min-h-0 flex-col">
-          <p className="text-sm font-medium uppercase tracking-[0.25em] text-gold">Our approach</p>
-          <h2 id="approach-heading" className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-5xl">
-            From business challenge to measurable growth
+          <h2 id="approach-heading" className="text-display-lg font-semibold text-balance">
+            <SplitText text="From business challenge to measurable growth" />
           </h2>
 
           <div className="mt-8 flex gap-8 lg:mt-12">

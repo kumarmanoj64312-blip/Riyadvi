@@ -10,7 +10,7 @@ import { companyStats } from "@/lib/stats";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Riyadvi Software Technologies — a technology and digital solutions partner since 2021. Our story, vision, mission, values and journey.",
+    "Riyadvi Software Technologies, a technology and digital solutions partner since 2021. Our story, vision, mission, values and journey.",
 };
 
 /** /about — story, vision & mission, values, approach, milestones, recognition. */
@@ -89,7 +89,7 @@ export default async function AboutPage() {
           <SectionHeading
             eyebrow="Our approach"
             title="Diagnose, design, build, grow"
-            description="Every engagement follows the same accountable path — strategy before code, measurement after launch."
+            description="Every engagement follows the same accountable path: strategy before code, measurement after launch."
           />
           <div className="mt-12">
             <JourneyFlow />

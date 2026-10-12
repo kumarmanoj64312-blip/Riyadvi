@@ -10,7 +10,7 @@ export const siteConfig = {
   founded: 2021,
   tagline: "A Technology & Digital Solutions Partner",
   description:
-    "Riyadvi is a technology and digital solutions partner combining strategy, design and engineering — custom software, web & app development, UI/UX, AR/VR and digital marketing that help businesses grow.",
+    "Riyadvi is a technology and digital solutions partner combining strategy, design and engineering: custom software, web & app development, UI/UX, AR/VR and digital marketing that help businesses grow.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   // TODO(owner): replace placeholders with Riyadvi's real contact details via env.

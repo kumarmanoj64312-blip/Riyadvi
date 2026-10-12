@@ -13,7 +13,7 @@ export const jobs: Job[] = [
     experience: { min: 1, max: 3 },
     location: "Hybrid · India",
     type: "Full-time",
-    summary: "Build fast, accessible, beautiful interfaces for client websites and web apps — including interactive 3D experiences.",
+    summary: "Build fast, accessible, beautiful interfaces for client websites and web apps, including interactive 3D experiences.",
     responsibilities: [
       "Build pages and components in Next.js, React and TypeScript",
       "Turn Figma designs into pixel-perfect, responsive UI",

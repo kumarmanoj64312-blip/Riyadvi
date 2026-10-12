@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { SplitText } from "@/components/ui/SplitText";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SceneView } from "@/three/canvas/SceneView";
@@ -40,7 +41,9 @@ export function ServicePageTemplate({ service, others, relatedProjects }: Props)
               <span className="text-muted">{service.title}</span>
             </nav>
             <p className="mt-6 text-sm font-medium uppercase tracking-[0.25em] text-gold">{service.title}</p>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-balance md:text-6xl">{service.hero.headline}</h1>
+            <h1 className="text-display-xl mt-3 font-semibold text-balance">
+            <SplitText text={service.hero.headline} trigger="load" />
+          </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{service.hero.intro}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href={quoteHref} size="lg">
@@ -175,7 +178,7 @@ export function ServicePageTemplate({ service, others, relatedProjects }: Props)
           <div className="flex flex-col items-start gap-6 rounded-3xl border border-gold/30 bg-surface-2 p-8 md:flex-row md:items-center md:justify-between md:p-12">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">Ready to start your {service.title.toLowerCase()} project?</h2>
-              <p className="mt-2 text-muted">Tell us what you need — you&apos;ll get a clear scope and estimate within 48 hours.</p>
+              <p className="mt-2 text-muted">Tell us what you need. You&apos;ll get a clear scope and estimate within 48 hours.</p>
             </div>
             <Button href={quoteHref} size="lg">
               Get a Quote

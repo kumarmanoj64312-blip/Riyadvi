@@ -37,7 +37,7 @@ export default async function BlogPage() {
             as="h1"
             eyebrow="Insights"
             title="Ideas for growing businesses"
-            description="Practical thinking on strategy, product, engineering and marketing — from the team that builds it."
+            description="Practical thinking on strategy, product, engineering and marketing, from the team that builds it."
           />
 
           {featured && (

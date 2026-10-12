@@ -9,8 +9,12 @@ export type SceneParams = {
   serviceType?: ServiceSceneType;
   /** "tile" = small, hover-driven card visual; "hero" = large interactive version. */
   variant?: "tile" | "hero";
-  /** Technologies for the constellation (scene "tech"). */
+  /** Technologies for the globe (scene "tech"). */
   technologies?: { slug: string; ring: 0 | 1 | 2 }[];
+  /** Case studies for the 3D ring (scene "work"): one generated screen each. */
+  projects?: { slug: string; client: string; accent: string; screen: string; screens?: string[] }[];
+  /** Layer names, bottom → top (scene "capabilities"). */
+  layers?: string[];
   /** Case-study device presentation (scene "device"). */
   showcase?: { device: "phone" | "laptop"; client: string; accent: string; screens: string[] };
 };
@@ -30,6 +34,12 @@ export type SceneProps = {
   hoverRef: RefObject<boolean>;
   /** Pointer position relative to the host element. */
   localPointer: RefObject<ScenePointer>;
+  /**
+   * Where the scene's box sits in the viewport, written on scroll by SceneView:
+   * +1 = just entering from the bottom, 0 = centred, -1 = leaving at the top.
+   * Lets every scene react to scrolling (rotate, open up, parallax).
+   */
+  viewProgress: RefObject<number>;
   /** Only "high" | "medium" ever reach a scene — "low" gets the fallback. */
   tier: "high" | "medium";
   /** Stop idle/auto motion; keep user-driven motion (pointer, scroll). */
